@@ -1,0 +1,17 @@
+.table-loc {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    max-width: 1080px;
+    border-collapse: collapse;
+    border-style: outset;
+}
+
+th, td {
+    text-align: left;
+    vertical-align: middle;
+    padding: 5px;
+    border-bottom: 1px solid #606060;
+}
+
+thead:hover {background-color: #95dfdf;}
