@@ -1,19 +1,19 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Login, Sign , Public} from '../components'
+import { Login, Sign , MyProfile} from '../components'
 import { Link } from 'react-router-dom'
-function App() {
+function allstaff() {
   return (
     <div className="App">
       <div className="jss100">
       <div className="jss101">
         
         </div>
-        <Public/>
- 
-
+        <Login/>
+      <Sign />
+    <MyProfile />
         </div>
     </div>
   );
 }
 
-export default App;
+export default allstaff;

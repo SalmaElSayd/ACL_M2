@@ -2,5 +2,6 @@
 
 import Login from './login'
 import Sign from './signinout'
-
-export {Login, Sign}
+import Public from './public'
+import MyProfile from './myProfile'
+export {Login, Sign, Public, MyProfile}

@@ -44,8 +44,8 @@ const handlePasswordChange = (e)=>{
 <div className="container">
     <div>
             <form onSubmit={onSubmit}>
-        <input onChange={handleEmailChange}/>
-        <input onChange={handlePasswordChange}/>
+        <input placeholder="email" type="email" onChange={handleEmailChange} />
+        <input placeholder="password" type="password"onChange={handlePasswordChange} />
         <input type="submit" />
             </form>
         </div>
