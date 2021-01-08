@@ -5,12 +5,12 @@ function Sign() {
 
   const signin = ()=>{
     console.log("signing in")
-    axios.post('signIn',{} ,{headers:{authorisation:localStorage.getItem('jwtToken')}})
+    axios.post('http://localhost:3001/signIn',{} ,{headers:{authorisation:localStorage.getItem('jwtToken')}})
     .then(res => console.log(res.data))
   }
   const signout = ()=>{
     console.log("signing out")
-    axios.post('signOut',{}, {headers:{authorisation:localStorage.getItem('jwtToken')}})
+    axios.post('http://localhost:3001/signOut',{}, {headers:{authorisation:localStorage.getItem('jwtToken')}})
     .then(res => console.log(res.data))
   }
   return (

@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Login, Sign , Public} from '../components'
+import { Public} from '../components'
 import { Link } from 'react-router-dom'
 function App() {
   return (
