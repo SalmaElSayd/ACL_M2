@@ -2,6 +2,8 @@ import axios from 'axios'
 import React from 'react';
 import setAuthToken from '../api'
 import { Link } from 'react-router-dom'
+import '../style/ViewStaff.css';
+
 import Slot from './slot'
 class Schedule extends React.Component{
     constructor(props){
@@ -30,16 +32,18 @@ putInSlots(inday, targetday){
         console.log(this.props.sched)
         console.log(this.state)
         let info = ""
+        if (this.props.sched){
         return(
            <div>
         <table className='table-hover'>
                         <thead>
                             <tr>
-                                <th>first</th>
-                                <th>second</th>
-                                <th>third</th>
-                                <th>fourth</th>
-                                <th>fifth</th>
+                                <th>Day</th>
+                                <th>First</th>
+                                <th>Second</th>
+                                <th>Third</th>
+                                <th>Fourth</th>
+                                <th>Fifth</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,7 +99,8 @@ putInSlots(inday, targetday){
                         </tbody>
                     </table>
                     </div>
-        )
+        )}else{
+        return null}
     }
 }
 

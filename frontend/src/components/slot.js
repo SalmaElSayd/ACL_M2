@@ -3,8 +3,6 @@ import React , {useState, useEffect}from 'react'
 import { Link } from 'react-router-dom'
 
 function Slot (props){
-    console.log('slot')
-        console.log(props)
 
        { if (props.slot_info){
       return (

@@ -1,5 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import React , {useState, useEffect}from 'react'
+import '../style/ViewStaff.css';
+
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Schedule from './schedule';
@@ -9,10 +11,10 @@ function Myprofile (props){
     const [profile, setProfile]=useState([]);
     const [schedule, setSchedule]=useState([]);
     useEffect(() => {
-        axios.get('http://localhost:3001/myProfile',{headers:{authorisation:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFjLTEiLCJyb2xlMSI6Imluc3RydWN0b3IiLCJpYXQiOjE2MTAxMTAxNTV9.-MOowNg4OrDhSJM1aeYZazaYfqF7RwQxRSdBGRT2WpU'}})
-        .then(res => {setProfile([res.data]);
-            setSchedule(res.data.schedule);
-        console.log(res.data.schedule)})
+        axios.get('http://localhost:3001/myProfile',{headers:{authorisation:localStorage.getItem('jwtToken')}})
+        .then(res => {setProfile([res.data.profile]);
+            setSchedule(res.data.profile.schedule);
+        console.log('profile.schedule'+res.data.profile.schedule)})
        
     }, []);
    

@@ -117,13 +117,13 @@ router.route('/login')
 .post(async (req, res)=>{
     console.log("log in")
     if (!req.body.email | !req.body.password){
-        return res.send("Please enter email and password to login");
+        return res.send({message: "Please enter email and password to login"});
     }
 
 
     const result  = await staff_model.findOne({email: req.body.email});
     if(!result){
-        return res.send("You need to sign up first")
+        return res.send({message:"You need to sign up first"})
     }
     console.log(result);
     try{
@@ -141,7 +141,7 @@ router.route('/login')
             console.log("new_password  "+req.body.newPassword)
             const salt = await bcrypt.genSalt(10); //10 ->>computational cost: hashing 2^10 times over
             if (!req.body.newPassword){
-                return res.send("please enter new password")
+                return res.send({message: "please enter new password"})
             }
             const newPassword = await bcrypt.hash(req.body.newPassword,salt)
         
@@ -157,19 +157,18 @@ router.route('/login')
 
         const token = jwt.sign({id:result.id, role1:result.role1}, process.env.TOKEN_SECRET)
         res.setHeader('Access-Control-Allow-Origin', '*')
-        res.setHeader('Authorization', token);
-        console.log(res.getHeaders())
-        res.send(token)
+        console.log(token)
+        res.send({t: token})
     }
     else{
-         res.send("Incorrect password ")
+         res.send({message:"Incorrect password "})
     }
 });
 
 router.route('/logout')
 .post(async(req,res)=>{
     var token_dead = new token_blacklist({
-        token:req.header('Authorization')
+        token:req.req.headers.authorisation
     });
     try{
     await token_dead.save();}
@@ -177,7 +176,7 @@ router.route('/logout')
         return res.send(error);
     }
         
-    res.header('Authorization','').send('logout successful');
+    res.send({message:'logout successful'});
     // window.location.replace('/index.html');
 
 });
@@ -191,13 +190,13 @@ router.route('/myProfile')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({message:"Authenication failed"})
     }
     const profile  = await staff_model.findOne({id:result.id});
 
     
     if(!profile){
-        return res.send("This account does not exist")
+        return res.send({message:"This account does not exist"})
     }
     else{
         const prof ={
@@ -212,7 +211,7 @@ router.route('/myProfile')
             information: profile.info
         } 
 
-         res.send(prof);
+         res.send({profile :prof});
     }
 });
 
@@ -232,13 +231,13 @@ router.route('/updateProfile')
     console.log(result);
 
     if(!result){
-        return res.write("Authentication failed")
+        return res.write({message:"Authentication failed"})
     }
     const profile  = await staff_model.findOne({id:result.id});
 
     console.log("info           "+req.body.info);
     if(!profile){
-        return res.write("This account does not exist")
+        return res.write({message:"This account does not exist"})
     }
     else{
         try {
@@ -250,7 +249,7 @@ router.route('/updateProfile')
         
     }
     var upd = await staff_model.findOne({id:result.id});
-    res.write("updated profile info: "+ upd.info);
+    res.write({new_profile: upd.info});
     res.send();
 });
 
@@ -260,10 +259,10 @@ router.route('/resetPassword')
     const result = await auth(req,res);
 
     if(!result){
-        return res.send("Authentication failed")
+        return res.send({message :"Authentication failed"})
     }
     if (!req.body.password){
-        return res.send('Please enter new password')
+        return res.send({message :'Please enter new password'})
     }
 
     const salt = await bcrypt.genSalt(10); //10 ->>computational cost: hashing 2^10 times over
@@ -278,7 +277,7 @@ try {
     return res.send(error);
 }
     
-    res.send("password reset done");
+    res.send({message: "password reset done"});
 });
 
 
@@ -289,7 +288,7 @@ router.route('/signIn')
     const result = await auth(req,res);
 console.log(result)
     if(!result){
-        return res.send("Authentication failed")
+        return res.send({message:"Authentication failed"})
     }
     var tim = new Date();
     console.log("time " +tim+ "   "+tim.getMonth());
@@ -302,7 +301,7 @@ console.log(result)
         tim.setHours(19)
         tim.setMinutes(0)
     }
-    console.log("time " +tim.getHours());
+    console.log(tim.getHours());
     var found =false;
     var attendance_today = await attendance_model.findOne({staff_id:result.id});
     attendance_today.attendance.forEach(record => {
@@ -388,7 +387,7 @@ router.route('/signOut')
 //     const update = {signIn : "",  $inc: {missing_hours: timediff  }};
 //     const opts = { new: true };
 //    staff_model.findOneAndUpdate(filter,update, opts)
-   res.send(tim);
+   res.send({time:tim});
 });
 
 router.route('/viewAttendance')
@@ -401,7 +400,7 @@ router.route('/viewAttendance')
         return res.send("Authentication failed")
     }
     const record  = await  attendance_model.findOne({staff_id:result.id });
-    res.send(record)
+    res.send({attendance_record:record})
 });
 
 function checkMonth(month, year, date){
@@ -430,7 +429,7 @@ router.route('/viewAttendance/:month/:year')
             monthrecs.push(record)
         }
     });
-    res.send(monthrecs)
+    res.send({attendance_records:monthrecs})
 });
 
 function checkGUCMonth(recdate, date){
@@ -470,7 +469,7 @@ router.route('/viewMissingDays')
             missingdays.push(record)
         }
     });
-    res.send(missingdays)
+    res.send({days:missingdays})
 });
 
 
