@@ -143,10 +143,40 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
             );}
             else{
           
-          return(
-
-            <h1>no access</h1>
-          )
+              if (role1.toLowerCase()=='hr' ){
+  
+                return (
+                  <div className="section">
+                   
+                      
+                    
+                      <Router>
+                      <PublicNavbar /> 
+                      {/* //replace with ta navbar */}
+                        
+                    <Switch>
+                      <Route exact path="/home" component = {MyProfile} />
+                      <Route path='/signinout' exact component={Sign}></Route>
+                      <Route path='/viewAttendance' exact component={MyAttendance}></Route>
+                      <Route path='/resetPassword' exact component={ResetPassword}></Route>
+                      <Route path='/updateProfile' exact component={UpdateProfile}></Route>
+              
+                    
+                      
+                    </Switch>
+                  </Router>
+                      
+                  </div>
+                );}
+                else{
+              
+              return (
+                <h1>No Access</h1>
+              )
+              
+                  
+                }
+        
           
               
             }
