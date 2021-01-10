@@ -7,7 +7,7 @@ import MyProfile from './myProfile'
 import Schedule from './schedule'
 import PublicNavbar from './PublicNavbar'
 
-
+import ResetPassword from './resetPassword';
 import Navbar from './Navbar';
 import HomePage from './HomePage';
 import ViewStaff from './ViewStaff';
@@ -21,8 +21,8 @@ import RejectRequests from './RejectRequests';
 import ViewCourseCoverage from './ViewCourseCoverage';
 import ViewTeachingAssignments from './ViewTeachingAssignments';
 import MyAttendance from './myAttendance'
+import UpdateProfile from './updateProfile'
 
-
-export {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance,
+export {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance, ResetPassword,UpdateProfile,
     Navbar, ViewStaff, UpdateCourseInstructor, AssignCourseInstructor, DeleteCourseInstructor, ViewDayOff,
     HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments }

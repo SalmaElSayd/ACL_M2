@@ -24,6 +24,18 @@ export const SidebarDataPublic = [
         className: 'nav-text'
     },
     {
+        title: 'Reset Password',
+        path: '/resetPassword',
+        icon: <AiIcons.AiOutlineUserAdd/>,
+        className: 'nav-text'
+    },
+    {
+        title: 'Update Profile',
+        path: '/updateProfile',
+        icon: <AiIcons.AiOutlineUserAdd/>,
+        className: 'nav-text'
+    },
+    {
         title: 'Update Instructor',
         path: '/updateCourseInstructor',
         icon: <AiIcons.AiOutlineUserSwitch />,
