@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Login, Sign , Public,  Navbar, ViewStaff, UpdateCourseInstructor, AssignCourseInstructor, DeleteCourseInstructor, ViewDayOff,
-  HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments, MyProfile } from '../components'
+import { Login, Sign , Public,HrNavbar,Hrc,  Navbar, ViewStaff, UpdateCourseInstructor, AssignCourseInstructor, DeleteCourseInstructor, ViewDayOff,
+  HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments, MyProfile, LocationNavbar } from '../components'
 import { Link } from 'react-router-dom'
 import {PublicNavbar} from '../components'
 import {
@@ -20,7 +20,11 @@ function App() {
           
       <Switch>
         <Route exact path="/login" component = {Login} />
+        <Route  path="/hr" component = {Hrc} />
         <Route  path="/" component = {Public} />
+      
+
+
         
       </Switch>
     </Router>

@@ -4,7 +4,8 @@ import setAuthToken from '../api'
 import {Redirect,  Link , useHistory} from 'react-router-dom'
 import '../style/loginstyle.css'
 
-function Login() {
+function Login() { 
+  
     const [email, setEmail]=useState('');
     const [password, setPassword]=useState('');
     const [resMessage, setResMessage]=useState('');
@@ -51,7 +52,7 @@ const handlePasswordChange = (e)=>{
 
             <form onSubmit={onSubmit}>
         <input placeholder="email" type="email" onChange={handleEmailChange} />
-        <input placeholder="password" type="password"onChange={handlePasswordChange} />
+        <input placeholder="password" type="password" onChange={handlePasswordChange} />
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>

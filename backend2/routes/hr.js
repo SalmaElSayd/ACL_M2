@@ -13,14 +13,15 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-async function auth(req, res){
 
+async function auth(req, res){
+    console.log('authenticating')
+    // console.log(req)
     let is_blacklisted =true;
-    let token_entry = await token_blacklist.findOne({token:req.header('auth-token')})
+    let token_entry = await token_blacklist.findOne({token:req.headers.authorisation})
     console.log(token_entry);
     if (!token_entry){
-    
-    const result = jwt.decode(req.header('auth-token'), process.env.TOKEN_SECRET);
+    const result = jwt.decode(req.headers.authorisation, process.env.TOKEN_SECRET);
     // console.log(result);
     if(!result){
         return false;
@@ -31,6 +32,7 @@ async function auth(req, res){
         return false;
     }
 }
+
 
 async function getNextSequenceValue(sequenceName){
     const fields = await counters_model.countDocuments();
@@ -1295,9 +1297,6 @@ else{
 });
 
 
-
-
-
 router.route('/hr/viewattendanceRec')
 .get(async (req, res)=>{
     const result = await auth(req,res);
@@ -1367,8 +1366,6 @@ function checkGUCMonth(recdate, date){
     
     return false;
     }
-
-
 
 router.route('/hr/viewStaffmemberMissinghours')
 .post(async (req, res)=>{

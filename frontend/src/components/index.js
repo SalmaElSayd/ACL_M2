@@ -6,6 +6,12 @@ import Public from './public'
 import MyProfile from './myProfile'
 import Schedule from './schedule'
 import PublicNavbar from './PublicNavbar'
+import HrNavbar from './HrNavbar'
+import Hrc from './Hrc'
+import Locationc from './LocationC'
+import addlocation from './addlocation'
+
+
 
 
 import Navbar from './Navbar';
@@ -25,4 +31,4 @@ import MyAttendance from './myAttendance'
 
 export {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance,
     Navbar, ViewStaff, UpdateCourseInstructor, AssignCourseInstructor, DeleteCourseInstructor, ViewDayOff,
-    HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments }
+    HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments,HrNavbar,Hrc,Locationc,addlocation}
