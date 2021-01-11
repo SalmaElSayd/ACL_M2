@@ -13,13 +13,13 @@ require('dotenv').config()
 const isString = (input) => {return (typeof input === 'string' || input instanceof String)};
 
 async function auth(req, res){
-
+    console.log('authenticating')
+    // console.log(req)
     let is_blacklisted =true;
-    let token_entry = await token_blacklist.findOne({token:req.header('auth-token')})
+    let token_entry = await token_blacklist.findOne({token:req.headers.authorisation})
     console.log(token_entry);
     if (!token_entry){
-    
-    const result = jwt.decode(req.header('auth-token'), process.env.TOKEN_SECRET);
+    const result = jwt.decode(req.headers.authorisation, process.env.TOKEN_SECRET);
     // console.log(result);
     if(!result){
         return false;
@@ -30,7 +30,6 @@ async function auth(req, res){
         return false;
     }
 }
-
 router.route('/coordinator/viewSlotLinkingRequests').get(async(req,res)=>{
     let token = 0;
     try {
@@ -209,6 +208,7 @@ router.route('/coordinator/rejectSlotLinkingRequest').post(async(req, res)=>{
 })
 
 
+
 router.route('/coordinator/addSlots').post(async(req,res)=>{
     const result = await auth(req,res)
     if(!result){
@@ -224,9 +224,12 @@ router.route('/coordinator/addSlots').post(async(req,res)=>{
         return res.send("This member isn't a coordinator")
     }
     fac.departments.forEach((dep) => {
+        console.log("gayss" + dep)
         dep.courses.forEach((c)=>{
             if(c.id.toLowerCase().trim() == req.body.courseID.toLowerCase().trim()){
+                console.log(c.id)
                 course = c
+                console.log("gayss" + course)
             }
         })
     })
@@ -242,6 +245,7 @@ router.route('/coordinator/addSlots').post(async(req,res)=>{
             group:req.body.group,
             day:req.body.day
         }
+        console.log(slot)
     }
     
     if(!(coordinator.courses.includes(req.body.courseID))){
@@ -249,7 +253,7 @@ router.route('/coordinator/addSlots').post(async(req,res)=>{
     }else{
         course.course_schedule.push(slot)
         course.coverage++;
-        fac.save()
+        await fac.save()
         res.send("The Slot has been added correctly")
     }
 
@@ -425,7 +429,7 @@ router.route('/coordinator/deleteSlot').post(async(req,res)=>{
                 mem.save()
             }
         })
-        fac.save()
+        await fac.save()
         res.send("Removed Successfully")
     }
 

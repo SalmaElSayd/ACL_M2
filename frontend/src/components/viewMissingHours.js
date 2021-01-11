@@ -9,8 +9,8 @@ import SignRecords from './signrecords'
 
  function MissingHours (props){
 
-    const [missingHours, setMissingHours]=useState([]);
-    const [missingMinutes, setMissingMinutes]=useState([]);
+    const [missingHours, setMissingHours]=useState(0);
+    const [missingMinutes, setMissingMinutes]=useState(0);
     const [isExtra, setisExtra]=useState('Missing Hours');
     const [resMessage, setResMessage]=useState();
     

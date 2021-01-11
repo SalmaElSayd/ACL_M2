@@ -29,23 +29,23 @@ const handlePasswordChange = (e)=>{
 
   return (
     
-      <div className="jss102">
-        <h3>
-            Log in
-            </h3>
+      
             
         
 <div className="form-loc">
+        <h3>
+            Reset Password
+            </h3>
     <div>
             <form onSubmit={onSubmit}>
-        <input placeholder="password" type="password"onChange={handlePasswordChange} />
-        <input type="submit" />
+        <input placeholder="password" type="password" className="form-control" onChange={handlePasswordChange} />
+        <input type="submit" className="btn btn-primary" />
             </form>
   <label>{resMessage}</label>
         </div>
     </div>
 
-    </div>
+    
     
   );
 }

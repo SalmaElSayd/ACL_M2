@@ -12,36 +12,34 @@ import SignRecords from './signrecords'
     const [att, setAttendance]=useState([]);
     const [mon, setMonth]=useState();
     const [yr, setYear]=useState();
-    // useEffect(() => {
-    //     await axios.get('http://localhost:3001/viewAttendance',{headers:{authorisation:localStorage.getItem('jwtToken')}})
-    //     .then(res => {
-            
-    //     console.log('your attendance records'+res.data.attendance_record)})
-       
-    // }, []);
-   
-      const handleClick=()=>{
-          if (mon && yr){
-              console.log('with params')
-            axios.get('http://localhost:3001/viewAttendance/'+mon +"/"+yr,{headers:{authorisation:localStorage.getItem('jwtToken')}})
-        .then(res => {setAttendance(res.data.attendance_record)
-            
-        console.log('your attendance records'+res.data.attendance_record)})
-          
-          }else{
+    useEffect(() => {
         axios.get('http://localhost:3001/viewAttendance',{headers:{authorisation:localStorage.getItem('jwtToken')}})
-        .then(res => {setAttendance(res.data.attendance_record['attendance'])
-            
-        console.log('your attendance records'+res.data.attendance_record['attendance'])})
-          }
-      }
-
+      .then(res => {setAttendance(res.data.attendance_record['attendance'])
+          
+      console.log('your attendance records'+res.data.attendance_record['attendance'])})
+        
+    }, []);
+   
+     
       const handleMonthChange=(e)=>{
           console.log(e.target.value)
           setMonth(e.target.value.substr(5,6))
           setYear(e.target.value.substr(0,4))
           console.log(mon)
           console.log(yr)
+          if (mon && yr){
+            console.log('with params')
+          axios.get('http://localhost:3001/viewAttendance/'+mon +"/"+yr,{headers:{authorisation:localStorage.getItem('jwtToken')}})
+      .then(res => {setAttendance(res.data.attendance_record)
+          
+      console.log('your attendance records'+res.data.attendance_record)})
+        
+        }else{
+      axios.get('http://localhost:3001/viewAttendance',{headers:{authorisation:localStorage.getItem('jwtToken')}})
+      .then(res => {setAttendance(res.data.attendance_record['attendance'])
+          
+      console.log('your attendance records'+res.data.attendance_record['attendance'])})
+        }
       }
     
     
@@ -57,7 +55,6 @@ import SignRecords from './signrecords'
         <input type="month" onChange={handleMonthChange}/>
        </form>
         
-       <button onClick={handleClick}>get my attendance</button>
         <table className='table-hover'>
                         <thead>
                             <tr>

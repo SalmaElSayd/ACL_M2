@@ -8,6 +8,7 @@ import Schedule from './schedule';
 import Logout from './logout';
 import MissingDays from './viewMissingDays';
 import MissingHours from './viewMissingHours';
+import UpdatedSalary from './updatedSalary';
 
 function Myprofile (props){
 
@@ -33,10 +34,13 @@ function Myprofile (props){
  
       return (
 <div className="form-loc">
+    <div className='logout'>
     <Logout />
+    </div>
     <div className='row'>
     
    <div className='col mx-1'>
+       <div className='infocard'>
       <h1>My Profile</h1>
     
                  
@@ -76,12 +80,19 @@ function Myprofile (props){
 
 
                        </div>
+                       </div>
                        <div className='col mx-1'>
-
+<div className='infocard'>
     <MissingDays />
-   
-            
+   </div>
+   <div className='infocard'>
+
     <MissingHours />
+    </div>
+    <div className='infocard'>
+
+    <UpdatedSalary />
+    </div>
    </div>
                        </div> 
                     <h3>Schedule</h3>

@@ -1,5 +1,13 @@
 
-div {
-    overflow: auto;
-    overflow-y: auto;
+
+.infocard{
+    border-radius: 25px;
+    padding: 30px;
+    margin: 20px;
+    background-color: #9EA3C2;
+}
+
+.logout{
+    text-align: right;
+    margin: 15px;
 }

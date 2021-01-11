@@ -31,7 +31,7 @@ function UpdateProfile() {
     <form onSubmit={handleSubmit} >
         <div className="form-group">
             <label>Information</label>
-            <input type="text" required className="form-control" onChange={handleChange} defaultValue={userInfo} />
+            <textarea rows="5" type="text" required className="form-control" onChange={handleChange} defaultValue={userInfo} />
             <br />
             
         </div>

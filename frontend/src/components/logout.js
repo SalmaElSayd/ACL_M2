@@ -1,7 +1,8 @@
 import axios from 'axios'
-import React, {useState} from 'react';
+import React, {useState } from 'react';
 import setAuthToken from '../api'
-import {Redirect,  Link , useHistory} from 'react-router-dom'
+import {Login} from './index'
+import {Redirect,  Route ,useHistory} from 'react-router-dom'
 import '../style/loginstyle.css'
 
 function Logout() {
@@ -14,8 +15,8 @@ function Logout() {
     .then(res => {
       
       
-          console.log('redirecting ')
-         return  history.push('/login')   
+      console.log('redirecting ')
+         return  history.push('/')   
       
       
       })
@@ -24,10 +25,11 @@ function Logout() {
 
 
   }
- 
+  <Route  exact path="/" component = {Login} />
+
   return (
       <div>
-      <button onClick={handleClick}>log out</button>
+      <button className="btn btn-primary" onClick={handleClick}>log out</button>
   <label>{resMessage}</label>
   </div>
   )

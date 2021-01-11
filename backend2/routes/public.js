@@ -139,6 +139,30 @@ router.route('/getRoles')
 
 });
 
+router.route('/salary')
+.get(async (req,res)=>{
+    const result = await auth(req,res);
+
+
+    console.log(result);
+
+    if(!result){
+        return res.send({message:"Authenication failed"})
+    }
+    const profile  = await staff_model.findOne({id:result.id});
+
+    
+    if(!profile){
+        return res.send({message:"This account does not exist"})
+    }
+    else{
+        salary=profile.salary;
+
+         res.send({salary:salary});
+    }
+
+});
+
 router.route('/login')
 .post(async (req, res)=>{
     console.log("log in")
