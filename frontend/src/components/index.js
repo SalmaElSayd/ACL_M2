@@ -10,7 +10,8 @@ import HrNavbar from './HrNavbar'
 import Hrc from './Hrc'
 import Locationc from './LocationC'
 import addlocation from './addlocation'
-
+import updatelocation from './updatelocation'
+import  deletelocation from  './deletelocation'
 
 
 
@@ -27,8 +28,9 @@ import RejectRequests from './RejectRequests';
 import ViewCourseCoverage from './ViewCourseCoverage';
 import ViewTeachingAssignments from './ViewTeachingAssignments';
 import MyAttendance from './myAttendance'
+import addStaffHr from './addStaffHr'
 
 
 export {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance,
     Navbar, ViewStaff, UpdateCourseInstructor, AssignCourseInstructor, DeleteCourseInstructor, ViewDayOff,
-    HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments,HrNavbar,Hrc,Locationc,addlocation}
+    HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments,HrNavbar,Hrc,Locationc,addlocation,updatelocation,deletelocation,addStaffHr}

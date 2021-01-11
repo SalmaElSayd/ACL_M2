@@ -82,12 +82,13 @@ async function getNextSequenceValue(sequenceName){
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
     try{
+        
     if(!valid_location_type(req.body.location_type)){
-        return res.send("please enter a valid location tybe 'hall',office'lab,tutorial");
+        return res.send({mess:"please enter a valid location tybe 'hall',office'lab,tutorial"});
     }
 
     var newLoc = new location_model({
@@ -98,13 +99,13 @@ if (result.role1.toLowerCase().trim() == "hr"){
     })
     console.log(newLoc);
 await newLoc.save()
-res.send("added : "+ newLoc)
+res.send({mess:"success"} )
 
 }catch(err){
     return res.send(err);
 }}
 else{
-    return res.send("Only HR can add a location")
+    return res.send({mess:"Only HR can add a location"})
 }
 });
 router.route('/hr/updateLocation')
@@ -112,7 +113,7 @@ router.route('/hr/updateLocation')
     const result = await auth(req,res);
     console.log(result);
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
     if (result.role1.toLowerCase().trim() == "hr"){
         try{
@@ -120,12 +121,12 @@ router.route('/hr/updateLocation')
         var loc_result = await location_model.findOne({id:req.body.loc_id});
          console.log(loc_result);
           if (!loc_result){
-        return res.send("This location does not exist");
+        return res.send({mess:"This location does not exist"});
          }
 
          if (!req.body.location_type){
         if (!req.body.capacity){
-            return res.send("please enter updated location info")
+            return res.send({mess:"please enter updated location info"})
         }else{
             var update = {capacity:req.body.capacity}
         }
@@ -145,18 +146,18 @@ router.route('/hr/updateLocation')
             return res.send(err0) 
         } 
         else{ 
-            console.log("Updated Docs : ", docs); 
+           
         } 
         }); 
 
           var newLoc = await location_model.findOne({id:req.body.loc_id});
-    res.send("updated to: "+newLoc)
+    res.send({mess:"success"})
 
 }catch(err){
     return res.send(err)
 }}
 else{
-    return res.send("Only HR can update a location")
+    return res.send({mess:"Only HR can update a location"})
 }
 });
  
@@ -168,7 +169,7 @@ router.route('/hr/deleteLocation')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
     if (result.role1.toLowerCase().trim() == "hr"){
 
@@ -176,7 +177,7 @@ router.route('/hr/deleteLocation')
    
    console.log(loc_result);
    if (!loc_result){
-       return res.send("This location does not exist");
+       return res.send({mess:"This location does not exist"});
    }
 
     location_model.deleteOne({id:req.body.loc_id}, function (err, docs) { 
@@ -188,7 +189,7 @@ router.route('/hr/deleteLocation')
         } 
     }); 
 
-res.send("deleted : "+ loc_result)}
+res.send({mess: "success"})}
 else{
     return res.send("Only HR can delete a location")
 }

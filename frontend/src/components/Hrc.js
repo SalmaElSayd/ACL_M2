@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import { HrNavbar,Hrc,
-  MyProfile,Locationc,
+  MyProfile,addStaffHr,addlocation,updatelocation,deletelocation
   } from '.'
  
 function Hr() {
@@ -18,7 +18,13 @@ function Hr() {
 {
   <Switch>
         <Route exact path="/home" component = {MyProfile} />
-        <Route exact path="/location" exact component = {Locationc} />
+        <Route exact path="/addlocation" exact component = {addlocation} />
+        <Route exact path="/updatelocation" exact component = {updatelocation} />
+        <Route exact path="/deletelocation" exact component = {deletelocation} />
+        <Route exact path="/addStaffHr" exact component = {addStaffHr} />
+
+
+
 
         </Switch>
   

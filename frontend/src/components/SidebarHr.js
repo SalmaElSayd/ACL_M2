@@ -18,14 +18,37 @@ export const SidebarHrc = [
     },
      
     {  
-        title: 'Location',
-        path: '/location',
+        title: 'add Location',
+        path: '/addlocation',
+        icon: <FaIcons.FaLocationArrow/>,
+        className: 'nav-text'
+    },
+    {  
+        title: 'update Location',
+        path: '/updatelocation',
+        icon: <FaIcons.FaLocationArrow/>,
+        className: 'nav-text'
+    }, {  
+        title: 'delet Location',
+        path: '/deletelocation',
         icon: <FaIcons.FaLocationArrow/>,
         className: 'nav-text'
     },
     {
-        title: 'edit staff',
-        path: '/editStaffHr',
+        title: 'add staff',
+        path: '/addStaffHr',
+        icon: <AiIcons.AiOutlineUserSwitch />,
+        className: 'nav-text'
+    },
+    {
+        title: 'update staff',
+        path: '/updateStaffHr',
+        icon: <AiIcons.AiOutlineUserSwitch />,
+        className: 'nav-text'
+    },
+    {
+        title: 'delete staff',
+        path: '/deleteStaffHr',
         icon: <AiIcons.AiOutlineUserSwitch />,
         className: 'nav-text'
     },

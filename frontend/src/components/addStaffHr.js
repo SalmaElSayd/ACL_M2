@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import '../style/loginstyle.css'
 
 
-function Addlocation(){
+function AddStaffHr(){
 
     const [id, setId]=useState('');
     const [type, setType]=useState('');
@@ -15,16 +15,17 @@ function Addlocation(){
       e.preventDefault();
     console.log("faculty being added ")
     const info = {
-        location_id:id,
+        loc_id:id,
         location_type:type,
         capacity:capacity
     }
-    axios.post('http://localhost:3001/hr/addLocation', info,{headers:{authorisation:localStorage.getItem('jwtToken')}})
+    axios.post('http://localhost:3001/hr/updateLocation', info,{headers:{authorisation:localStorage.getItem('jwtToken')}})
     .then(res => {
      
         setResMessage(res.data.mess)
         window.location='/hr'
 
+      
       })
       
   }
@@ -45,7 +46,7 @@ const handleTypeChange = (e)=>{
         return (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 30 }}>
                 <h1>
-           Add a Location 
+           update a Location 
             </h1>
             
             <form onSubmit={onSubmit}>
@@ -65,4 +66,5 @@ const handleTypeChange = (e)=>{
     
 }
 
-export default Addlocation;
+export default  AddStaffHr
+    
