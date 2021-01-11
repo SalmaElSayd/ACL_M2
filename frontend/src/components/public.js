@@ -11,7 +11,9 @@ import {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance, Re
   NavbarInstructor,AssignCoordinator,ViewCourseCoverageInstructor, ViewSlots, ViewStaffDepartment, ViewStaffCourse,AssignToSlot,UpdateCourseMem,DeleteCourseMem,RemoveCourseMem,
 
   NavbarHOD,Navbar, ViewStaff, UpdateCourseInstructor, AssignCourseInstructor, DeleteCourseInstructor, ViewDayOff,
-  HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments  } from '../components'
+  HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments ,
+
+  NavbarCoordinator,DeleteSlot,UpdateSlot,AddSlot} from '../components'
 import { Link } from 'react-router-dom'
 
 function Allstaff() {
@@ -118,7 +120,7 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
                 
               
                 <Router>
-                <PublicNavbar /> 
+                <NavbarCoordinator /> 
                 {/* //replace with coordinator navbar */}
                   
               <Switch>
@@ -128,7 +130,9 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
                 <Route path='/resetPassword' exact component={ResetPassword}></Route>
                 <Route path='/updateProfile' exact component={UpdateProfile}></Route>
         
-                
+                <Route path='/deleteSlot' exact component={DeleteSlot}></Route>
+        <Route path='/updateSlot' exact component={UpdateSlot}></Route>
+        <Route path='/addSlot' exact component={AddSlot}></Route>
                 
               </Switch>
             </Router>
