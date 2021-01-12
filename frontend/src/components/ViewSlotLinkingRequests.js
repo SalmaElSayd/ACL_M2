@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import '../style/table.css';
 
-export class ViewRequests extends Component {
+export class ViewSlotLinkingRequests extends Component {
     constructor(props) {
         super(props)
     
@@ -10,7 +10,7 @@ export class ViewRequests extends Component {
             requests: []
         }
 
-        axios.get('http://localhost:3001/viewRequests', {headers: {authorisation: localStorage.getItem('jwtToken')}})
+        axios.get('http://localhost:3001/coordinator/viewSlotLinkingRequests', {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 console.log(response.data)
                 if (response.data.length > 0) {
@@ -31,7 +31,7 @@ export class ViewRequests extends Component {
     render() {
         return (
             <div className='table-loc'>
-                <h3>Requests</h3>
+                <h3>Slot-Linking Requests</h3>
                     <table className='table-hover'>
                         <thead>
                             <tr>
@@ -65,4 +65,4 @@ export class ViewRequests extends Component {
     }
 }
 
-export default ViewRequests
+export default ViewSlotLinkingRequests

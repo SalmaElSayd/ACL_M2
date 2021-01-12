@@ -1,4 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '../style/scrollable.css';
+
 import {React, useState, useEffect} from 'react'
 import axios from 'axios';
 import {
@@ -8,12 +10,12 @@ import {
 } from "react-router-dom";
 
 import {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance, ResetPassword,UpdateProfile,
-  NavbarInstructor,AssignCoordinator,ViewCourseCoverageInstructor, ViewSlots, ViewStaffDepartment, ViewStaffCourse,AssignToSlot,UpdateCourseMem,DeleteCourseMem,RemoveCourseMem,
+  NavbarInstructor, AssignCoordinator,ViewCourseCoverageInstructor, ViewSlots, ViewStaffDepartment, ViewStaffCourse,AssignToSlot,UpdateCourseMem,DeleteCourseMem,RemoveCourseMem,
 
-  NavbarHOD,Navbar, ViewStaff, UpdateCourseInstructor, AssignCourseInstructor, DeleteCourseInstructor, ViewDayOff,
-  HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments ,
-
-  NavbarCoordinator,DeleteSlot,UpdateSlot,AddSlot} from '../components'
+  NavbarHOD, Navbar, ViewStaff, UpdateCourseInstructor, AssignCourseInstructor, DeleteCourseInstructor, ViewDayOff,
+  HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments,AssignCourseTA,AcceptRequests,
+  NavbarCoordinator,DeleteSlot,UpdateSlot,AddSlot, AcceptSlotLinkingRequest, RejectSlotLinkingRequest, ViewSlotLinkingRequests
+} from '../components'
 import { Link } from 'react-router-dom'
 
 function Allstaff() {
@@ -31,7 +33,7 @@ function Allstaff() {
 if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
   
   return (
-    <div className="section">
+    <div className="enable-scroll">
      
         
       
@@ -58,16 +60,18 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
             <Route path='/deleteCourseMem' exact component={DeleteCourseMem}></Route>
             <Route path='/removeCourseMem' exact component={RemoveCourseMem}></Route>
 
-         <Route path='/assignCourseInstructor' exact component={AssignCourseInstructor}></Route>
-         <Route path='/updateCourseInstructor' exact component={UpdateCourseInstructor}></Route>
-         <Route path='/deleteCourseInstructor' exact component={DeleteCourseInstructor}></Route>
-         <Route path='/viewStaff' exact component={ViewStaff}></Route>
-         <Route path='/viewDayOff' exact component={ViewDayOff}></Route>
-         <Route path='/viewRequests' exact component={ViewRequests}></Route>
-         {/* <Route path='/acceptRequest' exact component={AcceptRequests}></Route> */}
-         <Route path='/rejectRequest' exact component={RejectRequests}></Route>
-         <Route path='/viewCourseCoverage' exact component={ViewCourseCoverage}></Route>
-         <Route path='/viewTeachingAssignments' exact component={ViewTeachingAssignments}></Route>
+            {/* <Route path='/homePageHOD' exact component={HomePage}></Route> */}
+            <Route path='/assignCourseInstructor' exact component={AssignCourseInstructor}></Route>
+            <Route path='/assignCourseTA' exact component={AssignCourseTA}></Route>
+            <Route path='/updateCourseInstructor' exact component={UpdateCourseInstructor}></Route>
+            <Route path='/deleteCourseInstructor' exact component={DeleteCourseInstructor}></Route>
+            <Route path='/viewStaff' exact component={ViewStaff}></Route>
+            <Route path='/viewDayOff' exact component={ViewDayOff}></Route>
+            <Route path='/viewRequests' exact component={ViewRequests}></Route>
+            <Route path='/acceptRequest' exact component={AcceptRequests}></Route>
+            <Route path='/rejectRequest' exact component={RejectRequests}></Route>
+            <Route path='/viewCourseCoverage' exact component={ViewCourseCoverage}></Route>
+            <Route path='/viewTeachingAssignments' exact component={ViewTeachingAssignments}></Route>
         
       </Switch>
     </Router>
@@ -129,7 +133,10 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
                 <Route path='/viewAttendance' exact component={MyAttendance}></Route>
                 <Route path='/resetPassword' exact component={ResetPassword}></Route>
                 <Route path='/updateProfile' exact component={UpdateProfile}></Route>
-        
+
+                <Route path='/coordinator/viewSlotLinkingRequests' exact component={ViewSlotLinkingRequests}></Route>
+                <Route path='/coordinator/rejectSlotLinkingRequest' exact component={RejectSlotLinkingRequest}></Route>
+                <Route path='/coordinator/acceptSlotLinkingRequests' exact component={AcceptSlotLinkingRequest}></Route>
                 <Route path='/deleteSlot' exact component={DeleteSlot}></Route>
         <Route path='/updateSlot' exact component={UpdateSlot}></Route>
         <Route path='/addSlot' exact component={AddSlot}></Route>

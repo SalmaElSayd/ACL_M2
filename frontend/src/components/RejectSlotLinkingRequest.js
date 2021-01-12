@@ -2,17 +2,15 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import '../style/ViewStaff.css';
 
-export class RejectRequests extends Component {
+export class RejectSlotLinkingRequest extends Component {
     constructor(props) {
         super(props)
 
         this.onChangeRequestID = this.onChangeRequestID.bind(this);
-        this.onChangeComment = this.onChangeComment.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
             request_id: '',
-            comment: '',
             message: ''
         }
     }
@@ -23,21 +21,14 @@ export class RejectRequests extends Component {
         })
     }
 
-    onChangeComment(e) {
-        this.setState({
-            comment: e.target.value
-        })
-    }
-
     onSubmit(e) {
         e.preventDefault();
 
         const request = {
-            request_id: this.state.request_id,
-            comment: this.state.comment
+            request_id: this.state.request_id
         }
 
-        axios.post('http://localhost:3001/rejectRequest', request, {headers: {authorisation: localStorage.getItem('jwtToken')}})
+        axios.post('http://localhost:3001/coordinator/rejectSlotLinkingRequest', request, {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 if (response.data.message) {
                     this.setState({
@@ -49,8 +40,7 @@ export class RejectRequests extends Component {
             })
 
         this.setState({
-            request_id: '',
-            comment: ''
+            request_id: ''
         })
     }
     
@@ -62,11 +52,7 @@ export class RejectRequests extends Component {
                     <div className="form-group">
                         <label>Request ID</label>
                         <input type="text" required className="form-control" onChange={this.onChangeRequestID} value={this.state.request_id} placeholder="Enter request ID" />
-                        <small className="form-text text-muted">e.g. 5fe299f7eb2ac02b2f431bfb (You can view all request IDs by clicking on the Requests sidebar menu item)</small>
-                        <br />
-                        <label>Comment</label>
-                        <input type="text" className="form-control" onChange={this.onChangeComment} value={this.state.comment} placeholder="Enter your comment" />
-                        <small className="form-text text-muted">e.g. This request clashes with your proctoring schedule. (This is an optional field)</small>
+                        <small className="form-text text-muted">e.g. 5fe4ed6a733f622ca8b63994 (You can view all request IDs by clicking on the Slot-Linking Requests sidebar menu item)</small>
                     </div>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
@@ -79,4 +65,4 @@ export class RejectRequests extends Component {
     }
 }
 
-export default RejectRequests
+export default RejectSlotLinkingRequest

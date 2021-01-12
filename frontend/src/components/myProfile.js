@@ -1,4 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '../style/scrollable.css';
+
 import React , {useState, useEffect}from 'react'
 import '../style/ViewStaff.css';
 import '../style/myprofile.css'
@@ -33,6 +35,7 @@ function Myprofile (props){
 
  
       return (
+          <div >
 <div className="form-loc">
     <div className='logout'>
     <Logout />
@@ -99,6 +102,7 @@ function Myprofile (props){
 
                     <Schedule sched={schedule}/>
         
+      </div>
       </div>
       )
   

@@ -2,25 +2,19 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import '../style/ViewStaff.css';
 
-export class DeleteCourseInstructor extends Component {
+export class AssignCourseTA extends Component {
     constructor(props) {
         super(props)
 
-        this.onChangeInstructorID = this.onChangeInstructorID.bind(this);
+        this.onChangeTAID = this.onChangeTAID.bind(this);
         this.onChangeCourseID = this.onChangeCourseID.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
-            instructor_id: '',
+            ta_id: '',
             course_id: '',
             message: ''
         }
-    }
-
-    onChangeInstructorID(e) {
-        this.setState({
-            instructor_id: e.target.value
-        })
     }
 
     onChangeCourseID(e) {
@@ -29,17 +23,21 @@ export class DeleteCourseInstructor extends Component {
         })
     }
 
+    onChangeTAID(e) {
+        this.setState({
+            ta_id: e.target.value
+        })
+    }
+
     onSubmit(e) {
         e.preventDefault();
 
         const request = {
-            instructor_id: this.state.instructor_id,
+            ta_id: this.state.ta_id,
             course_id: this.state.course_id
         }
 
-        console.log(request);
-
-        axios.post('http://localhost:3001/deleteCourseInstructor', request, {headers: {authorisation: localStorage.getItem('jwtToken')}})
+        axios.post('http://localhost:3001/assignCourseTA', request, {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 if (response.data.message) {
                     this.setState({
@@ -51,19 +49,18 @@ export class DeleteCourseInstructor extends Component {
             })
 
         this.setState({
-            instructor_id: '',
+            ta_id: '',
             course_id: ''
         })
     }
-
     render() {
         return (
             <div className='form-loc'>
-                <h3>Delete Course Instructor</h3>
+                <h3>Assign Course TA</h3>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Instructor ID</label>
-                        <input type="text" required className="form-control" onChange={this.onChangeInstructorID} value={this.state.instructor_id} placeholder="Enter instructor ID" />
+                        <label>TA ID</label>
+                        <input type="text" required className="form-control" onChange={this.onChangeTAID} value={this.state.ta_id} placeholder="Enter TA ID" />
                         <small className="form-text text-muted">e.g. ac-1</small>
                         <br />
                         <label>Course ID</label>
@@ -81,4 +78,4 @@ export class DeleteCourseInstructor extends Component {
     }
 }
 
-export default DeleteCourseInstructor
+export default AssignCourseTA

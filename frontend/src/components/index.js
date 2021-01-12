@@ -34,6 +34,8 @@ import ViewRequests from './ViewRequests';
 import RejectRequests from './RejectRequests';
 import ViewCourseCoverage from './ViewCourseCoverage';
 import ViewTeachingAssignments from './ViewTeachingAssignments';
+import AssignCourseTA from './AssignCourseTA';
+import AcceptRequests from './AcceptRequests';
 import MyAttendance from './myAttendance'
 import UpdateProfile from './updateProfile'
 
@@ -42,11 +44,13 @@ import NavbarCoordinator from './NavbarCoordinator';
 import DeleteSlot from './deleteSlotCoordinator'
 import UpdateSlot from './updateSlotCoordinator'
 import AddSlot from './addSlotCoordinator'
-
+import AcceptSlotLinkingRequest from './AcceptSlotLinkingRequest';
+import RejectSlotLinkingRequest from './RejectSlotLinkingRequest';
+import ViewSlotLinkingRequests from './ViewSlotLinkingRequests';
 export {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance, ResetPassword,UpdateProfile,
     NavbarInstructor, AssignCoordinator,ViewCourseCoverageInstructor, ViewSlots, ViewStaffDepartment, ViewStaffCourse,AssignToSlot,UpdateCourseMem,DeleteCourseMem,RemoveCourseMem,
 
     NavbarHOD, Navbar, ViewStaff, UpdateCourseInstructor, AssignCourseInstructor, DeleteCourseInstructor, ViewDayOff,
-    HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments,
-    NavbarCoordinator,DeleteSlot,UpdateSlot,AddSlot
+    HomePage, ViewRequests,RejectRequests, ViewCourseCoverage, ViewTeachingAssignments,AssignCourseTA,AcceptRequests,
+    NavbarCoordinator,DeleteSlot,UpdateSlot,AddSlot, AcceptSlotLinkingRequest, RejectSlotLinkingRequest, ViewSlotLinkingRequests
 }

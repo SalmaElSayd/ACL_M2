@@ -29,7 +29,7 @@ import SignRecords from './signrecords'
           console.log(yr)
           if (mon && yr){
             console.log('with params')
-          axios.get('http://localhost:3001/viewAttendance/'+mon +"/"+yr,{headers:{authorisation:localStorage.getItem('jwtToken')}})
+          axios.get('http://localhost:3001/viewAttendance/'+e.target.value.substr(5,6) +"/"+e.target.value.substr(0,4),{headers:{authorisation:localStorage.getItem('jwtToken')}})
       .then(res => {setAttendance(res.data.attendance_record)
           
       console.log('your attendance records'+res.data.attendance_record)})

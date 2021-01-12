@@ -13,13 +13,13 @@ require('dotenv').config()
 const isString = (input) => { return (typeof input === 'string' || input instanceof String) };
 
 async function auth(req, res) {
-
+    console.log('authenticating')
+    // console.log(req)
     let is_blacklisted = true;
-    let token_entry = await token_blacklist.findOne({ token: req.header('auth-token') })
-    // console.log(token_entry);
+    let token_entry = await token_blacklist.findOne({ token: req.headers.authorisation })
+    console.log(token_entry);
     if (!token_entry) {
-
-        const result = jwt.decode(req.header('auth-token'), process.env.TOKEN_SECRET);
+        const result = jwt.decode(req.headers.authorisation, process.env.TOKEN_SECRET);
         // console.log(result);
         if (!result) {
             return false;
@@ -43,15 +43,15 @@ router.route('/assignCourseInstructor').post(async (req, res) => {
     }
 
     if (!token) {
-        return res.send({message: "Please login first"});
+        return res.send({ message: "Please login first" });
     }
 
     if (!instructorID || !courseID) {
-        return res.send({message: "Please enter all required data"});
+        return res.send({ message: "Please enter all required data" });
     }
 
     if (!isString(instructorID) || !isString(courseID)) {
-        return res.send({message: "Instructor id and course id must be strings"});
+        return res.send({ message: "Instructor id and course id must be strings" });
     }
 
     try {
@@ -59,22 +59,22 @@ router.route('/assignCourseInstructor').post(async (req, res) => {
         const hod = await staff_model.findOne({ id: token.id });
 
         if (hod.role2.toLowerCase().trim() !== "hod") {
-            return res.send({message:"You are not authorized to perform this action"});
+            return res.send({ message: "You are not authorized to perform this action" });
         }
         // find instructor with specified id
         const instructor = await staff_model.findOne({ id: instructorID.toLowerCase().trim() });
         if (!instructor) {
-            return res.send({message:`The academic member with id ${instructorID} has not been found.`});
+            return res.send({ message: `The academic member with id ${instructorID} has not been found.` });
         }
         if (instructor.role1.toLowerCase().trim() !== "instructor") {
-            return res.send({message: `The academic member with id ${instructorID} is not an instructor.`});
+            return res.send({ message: `The academic member with id ${instructorID} is not an instructor.` });
         }
 
         // add instructor to course attribute instructor_ids in faculty schema & update instructor in staff schema
         const faculties = await faculty_model.find();
 
         if (!faculties) {
-            return res.send({message: "There are no faculties yet!"});
+            return res.send({ message: "There are no faculties yet!" });
         }
 
         let message = "Your department has not been found";
@@ -87,21 +87,21 @@ router.route('/assignCourseInstructor').post(async (req, res) => {
                         if (courseID.toLowerCase().trim() === course.id.toLowerCase().trim()) {
                             // checks on specified instructor
                             if (instructor.faculty.toLowerCase().trim() !== faculty.name.toLowerCase().trim() || instructor.department.toLowerCase().trim() !== dep.id.toLowerCase().trim()) {
-                                return res.send({message: `The academic member with id ${instructorID} is either not part of your department or your faculty.`});
+                                return res.send({ message: `The academic member with id ${instructorID} is either not part of your department or your faculty.` });
                             }
 
                             try {
                                 let index = instructor.courses.indexOf(courseID);
                                 let index2 = course.instructor_ids.indexOf(instructorID.toLowerCase().trim());
                                 if (index !== -1 || index2 !== -1) {
-                                    return res.send({message: `The academic member with id ${instructorID} is already an instructor for course ${courseID}`});
+                                    return res.send({ message: `The academic member with id ${instructorID} is already an instructor for course ${courseID}` });
                                 }
                                 instructor.courses.push(courseID);
                                 course.instructor_ids.push(instructorID.toLowerCase().trim());
                                 await faculty_model.updateOne({ name: faculty.name }, { departments: faculty.departments });
                                 await staff_model.updateOne({ id: instructorID }, { courses: instructor.courses });
-                                
-                                return res.send({message: `Instructor with id ${instructorID} has been assigned to course ${courseID} successfully`});
+
+                                return res.send({ message: `Instructor with id ${instructorID} has been assigned to course ${courseID} successfully` });
                             } catch (error) {
                                 console.log(error);
                             }
@@ -127,15 +127,15 @@ router.route('/assignCourseTA').post(async (req, res) => {
     }
 
     if (!token) {
-        return res.send({message: "Please login first"});
+        return res.send({ message: "Please login first" });
     }
 
     if (!instructorID || !courseID) {
-        return res.send({message: "Please enter all required data"});
+        return res.send({ message: "Please enter all required data" });
     }
 
     if (!isString(instructorID) || !isString(courseID)) {
-        return res.send({message: "Instructor id and course id must be strings"});
+        return res.send({ message: "Instructor id and course id must be strings" });
     }
 
     try {
@@ -143,23 +143,23 @@ router.route('/assignCourseTA').post(async (req, res) => {
         const hod = await staff_model.findOne({ id: token.id });
 
         if (hod.role2.toLowerCase().trim() !== "hod") {
-            return res.send({message: "You are not authorized to perform this action"});
+            return res.send({ message: "You are not authorized to perform this action" });
         }
         // find instructor with specified id
         const instructor = await staff_model.findOne({ id: instructorID.toLowerCase().trim() });
         if (!instructor) {
-            return res.send({message: `The academic member with id ${instructorID} has not been found.`});
+            return res.send({ message: `The academic member with id ${instructorID} has not been found.` });
         }
         // console.log(instructor)
         if (instructor.role1.toLowerCase().trim() !== "ta") {
-            return res.send({message: `The academic member with id ${instructorID} is not a TA.`});
+            return res.send({ message: `The academic member with id ${instructorID} is not a TA.` });
         }
 
         // add instructor to course attribute instructor_ids in faculty schema & update instructor in staff schema
         const faculties = await faculty_model.find();
 
         if (!faculties) {
-            return res.send({message: "There are no faculties yet!"});
+            return res.send({ message: "There are no faculties yet!" });
         }
 
         let message = "Your department has not been found";
@@ -172,21 +172,21 @@ router.route('/assignCourseTA').post(async (req, res) => {
                         if (courseID.toLowerCase().trim() === course.id.toLowerCase().trim()) {
                             // checks on specified instructor
                             if (instructor.faculty.toLowerCase().trim() !== faculty.name.toLowerCase().trim() || instructor.department.toLowerCase().trim() !== dep.id.toLowerCase().trim()) {
-                                return res.send({message:`The academic member with id ${instructorID} is either not part of your department or your faculty.`});
+                                return res.send({ message: `The academic member with id ${instructorID} is either not part of your department or your faculty.` });
                             }
 
                             try {
                                 let index = instructor.courses.indexOf(courseID);
                                 let index2 = course.academic_member_ids.indexOf(instructorID.toLowerCase().trim());
                                 if (index !== -1 || index2 !== -1) {
-                                    return res.send({message:`The academic member with id ${instructorID} is already an academic member for course ${courseID}`});
+                                    return res.send({ message: `The academic member with id ${instructorID} is already an academic member for course ${courseID}` });
                                 }
                                 instructor.courses.push(courseID);
                                 course.academic_member_ids.push(instructorID.toLowerCase().trim());
                                 await faculty_model.updateOne({ name: faculty.name }, { departments: faculty.departments });
                                 await staff_model.updateOne({ id: instructorID }, { courses: instructor.courses });
-                                
-                                return res.send({message: `Academic member with id ${instructorID} has been assigned to course ${courseID} successfully`});
+
+                                return res.send({ message: `Academic member with id ${instructorID} has been assigned to course ${courseID} successfully` });
                             } catch (error) {
                                 console.log(error);
                             }
@@ -212,45 +212,45 @@ router.route('/updateCourseInstructor').post(async (req, res) => {
     }
 
     if (!token) {
-        return res.send({message: "Please login first"});
+        return res.send({ message: "Please login first" });
     }
 
     if (!oldInstructorID || !newInstructorID || !courseID) {
-        return res.send({message: "Please enter all required data"});
+        return res.send({ message: "Please enter all required data" });
     }
 
     if (!isString(oldInstructorID) || !isString(newInstructorID) || !isString(courseID)) {
-        return res.send({message: "Both instructor ids and the course id must be strings"});
+        return res.send({ message: "Both instructor ids and the course id must be strings" });
     }
 
     try {
         // validate HOD
         const hod = await staff_model.findOne({ id: token.id.toLowerCase().trim() });
         if (hod.role2.toLowerCase().trim() !== "hod") {
-            return res.send({message: "You are not authorized to perform this action"});
+            return res.send({ message: "You are not authorized to perform this action" });
         }
 
         const oldInstructor = await staff_model.findOne({ id: oldInstructorID.toLowerCase().trim() });
         const newInstructor = await staff_model.findOne({ id: newInstructorID.toLowerCase().trim() });
 
         if (!oldInstructor || !newInstructor) {
-            return res.send({message: "One or both of the specified instructors could not be found."});
+            return res.send({ message: "One or both of the specified instructors could not be found." });
         }
         if (oldInstructor.role1.toLowerCase().trim() !== "instructor") {
-            return res.send({message: `The academic member with id ${oldInstructorID} is not an instructor.`});
+            return res.send({ message: `The academic member with id ${oldInstructorID} is not an instructor.` });
         }
         if (newInstructor.role1.toLowerCase().trim() !== "instructor") {
-            return res.send({message: `The academic member with id ${newInstructorID} is not an instructor.`});
+            return res.send({ message: `The academic member with id ${newInstructorID} is not an instructor.` });
         }
 
         const faculties = await faculty_model.find();
 
         if (!faculties) {
-            return res.send({message: "There are no faculties yet!"})
+            return res.send({ message: "There are no faculties yet!" })
         }
 
         let message = "Your department has not been found";
-        
+
         faculties.forEach(faculty => {
             faculty.departments.forEach(dep => {
                 if (dep.head_id.toLowerCase().trim() === token.id.toLowerCase().trim()) {
@@ -260,18 +260,18 @@ router.route('/updateCourseInstructor').post(async (req, res) => {
                             // checks on specified instructors
                             if (oldInstructor.faculty.toLowerCase().trim() !== faculty.name.toLowerCase().trim() || oldInstructor.department.toLowerCase().trim() !== dep.id.toLowerCase().trim()
                                 || newInstructor.faculty.toLowerCase().trim() !== faculty.name.toLowerCase().trim() || newInstructor.department.toLowerCase().trim() !== dep.id.toLowerCase().trim()) {
-                                return res.send({message: "One or both of the specified academic members may not be part of your department or your faculty."});
+                                return res.send({ message: "One or both of the specified academic members may not be part of your department or your faculty." });
                             }
 
                             try {
                                 const index = oldInstructor.courses.indexOf(courseID);
                                 if (index === -1) {
-                                    return res.send({message:`The instructor with id ${oldInstructorID} does not teach this course.`});
+                                    return res.send({ message: `The instructor with id ${oldInstructorID} does not teach this course.` });
                                 }
 
                                 const index2 = newInstructor.courses.indexOf(courseID);
                                 if (index2 !== -1) {
-                                    return res.send({message: `The instructor with id ${newInstructorID} already teaches this course.`});
+                                    return res.send({ message: `The instructor with id ${newInstructorID} already teaches this course.` });
                                 }
 
                                 const index3 = course.instructor_ids.indexOf(oldInstructorID.toLowerCase().trim())
@@ -343,7 +343,7 @@ router.route('/updateCourseInstructor').post(async (req, res) => {
                                     await staff_model.updateOne({ id: newInstructorID.toLowerCase().trim() }, { courses: newInstructor.courses });
                                     message = `Instructor with id ${oldInstructorID} has been updated to instructor with id ${newInstructorID} successfully`
                                 }
-                                return res.send({message: message});
+                                return res.send({ message: message });
                             } catch (error) {
                                 console.log(error);
                             }
@@ -368,40 +368,40 @@ router.route('/deleteCourseInstructor').post(async (req, res) => {
     }
 
     if (!token) {
-        return res.send({message: "Please login first"});
+        return res.send({ message: "Please login first" });
     }
 
     if (!instructorID || !courseID) {
-        return res.send({message: "Please enter all required data"});
+        return res.send({ message: "Please enter all required data" });
     }
 
     if (!isString(instructorID) || !isString(courseID)) {
-        return res.send({message: "Instructor id and course id must be strings"});
+        return res.send({ message: "Instructor id and course id must be strings" });
     }
 
     try {
         // validate HOD
         const hod = await staff_model.findOne({ id: token.id.toLowerCase().trim() });
         if (hod.role2.toLowerCase().trim() !== "hod") {
-            return res.send({message:"You are not authorized to perform this action"});
+            return res.send({ message: "You are not authorized to perform this action" });
         }
 
         const instructor = await staff_model.findOne({ id: instructorID.toLowerCase().trim() });
         if (!instructor) {
-            return res.send({message:`The academic member with id ${instructorID} could not be found.`});
+            return res.send({ message: `The academic member with id ${instructorID} could not be found.` });
         }
         if (instructor.role1.toLowerCase().trim() !== "instructor") {
-            return res.send({message:`The academic member with id ${instructorID} is not an instructor.`});
+            return res.send({ message: `The academic member with id ${instructorID} is not an instructor.` });
         }
 
         const faculties = await faculty_model.find();
 
         if (!faculties) {
-            return res.send({message:"There are no faculties yet!"});
+            return res.send({ message: "There are no faculties yet!" });
         }
 
         let message = "Your department has not been found";
-        
+
         faculties.forEach(faculty => {
             faculty.departments.forEach(dep => {
                 if (dep.head_id.toLowerCase().trim() === token.id.toLowerCase().trim()) {
@@ -409,18 +409,18 @@ router.route('/deleteCourseInstructor').post(async (req, res) => {
                     dep.courses.forEach(async (course) => {
                         if (courseID.toLowerCase().trim() === course.id.toLowerCase().trim()) {
                             if (instructor.faculty.toLowerCase().trim() !== faculty.name.toLowerCase().trim() || instructor.department.toLowerCase().trim() !== dep.id.toLowerCase().trim()) {
-                                return res.send({message: `The academic member with id ${instructorID} is not part of either your department or your faculty.`});
+                                return res.send({ message: `The academic member with id ${instructorID} is not part of either your department or your faculty.` });
                             }
 
                             try {
                                 const index = instructor.courses.indexOf(courseID);
                                 if (index === -1) {
-                                    return res.send({message: `The instructor with id ${instructorID} does not teach this course.`});
+                                    return res.send({ message: `The instructor with id ${instructorID} does not teach this course.` });
                                 }
 
                                 const index2 = course.instructor_ids.indexOf(instructorID.toLowerCase().trim());
                                 if (index2 === -1) {
-                                    return res.send({message: `The instructor with id ${instructorID} does not teach this course.`});
+                                    return res.send({ message: `The instructor with id ${instructorID} does not teach this course.` });
                                 }
                                 console.log("here")
                                 // update oldInstructor's schedule
@@ -482,8 +482,8 @@ router.route('/deleteCourseInstructor').post(async (req, res) => {
                                 await staff_model.updateOne({ id: instructorID.toLowerCase().trim() }, { courses: instructor.courses, schedule: instructor.schedule });
                                 course.instructor_ids.splice(index2, 1);
                                 await faculty_model.updateOne({ name: faculty.name }, { departments: faculty.departments });
-                                
-                                return res.send({message: `Instructor with id ${instructorID} has been deleted successfully`});
+
+                                return res.send({ message: `Instructor with id ${instructorID} has been deleted successfully` });
                             } catch (error) {
                                 console.log(error);
                             }
@@ -656,23 +656,23 @@ router.route('/viewDayOff').post(async (req, res) => {
 })
 
 router.route('/viewRequests').get(async (req, res) => {
-    // let token;
-    // try {
-    //     token = await auth(req, res);
-    // } catch (error) {
-    //     console.log(error);
-    // }
+    let token;
+    try {
+        token = await auth(req, res);
+    } catch (error) {
+        console.log(error);
+    }
 
-    // if (!token) {
-    //     return res.send("Please login first");
-    // }
+    if (!token) {
+        return res.send("Please login first");
+    }
 
     try {
         // validate HOD
-        // const hod = await staff_model.findOne({ id: token.id.toLowerCase().trim() });
-        // if (hod.role2.toLowerCase() !== "hod") {
-        //     return res.send("You are not authorized to perform this action");
-        // }
+        const hod = await staff_model.findOne({ id: token.id.toLowerCase().trim() });
+        if (hod.role2.toLowerCase() !== "hod") {
+            return res.send("You are not authorized to perform this action");
+        }
 
         let myFaculty = 0;
         let myDepartment = 0;
@@ -680,8 +680,7 @@ router.route('/viewRequests').get(async (req, res) => {
         const faculties = await faculty_model.find();
         faculties.forEach(faculty => {
             faculty.departments.forEach(dep => {
-                //token.id.toLowerCase().trim()
-                if (dep.head_id.toLowerCase().trim() === "ac-7") {
+                if (dep.head_id.toLowerCase().trim() === token.id.toLowerCase().trim()) {
                     myFaculty = faculty.name;
                     myDepartment = dep.id;
                 }
@@ -698,7 +697,6 @@ router.route('/viewRequests').get(async (req, res) => {
         })
 
         const requests = await request_model.find({ sending_staff: { $in: ids } });
-        console.log(requests)
         return res.send(requests);
 
     } catch (error) {
@@ -706,8 +704,53 @@ router.route('/viewRequests').get(async (req, res) => {
     }
 })
 
+router.route('/handleAnnualRequest').post(async (req, res) => {
+    const replacement_1 = req.body.rep_1;
+    const replacement_2 = req.body.rep_2;
+    const replacement_3 = req.body.rep_3;
+    const replacement_4 = req.body.rep_4;
+    const replacement_5 = req.body.rep_5;
+    const target_slots = req.body.slots;
+    const target_day = req.body.day;
+
+    try {
+        target_slots.forEach(async (slot) => {
+            slot.replacement = true;
+            let rep = 0;
+
+            if (slot.id === 1) {
+                rep = await staff_model.findOne({ id: replacement_1 });
+            } else if (slot.id === 2) {
+                rep = await staff_model.findOne({ id: replacement_2 });
+            } else if (slot.id === 3) {
+                rep = await staff_model.findOne({ id: replacement_3 });
+            } else if (slot.id === 4) {
+                rep = await staff_model.findOne({ id: replacement_4 });
+            } else if (slot.id === 5) {
+                rep = await staff_model.findOne({ id: replacement_5 });
+            }
+
+            if (rep) {
+                switch (target_day) {
+                    case "Sunday": rep.schedule.sunday.push(slot); break;
+                    case "Monday": rep.schedule.monday.push(slot); break;
+                    case "Tuesday": rep.schedule.tuesday.push(slot); break;
+                    case "Wednesday": rep.schedule.wednesday.push(slot); break;
+                    case "Thursday": rep.schedule.thursday.push(slot); break;
+                    case "Saturday": rep.schedule.saturday.push(slot);
+                }
+                await rep.save();
+            }
+        })
+        return res.send({ message: "Request has been accepted and all slots have been added to the replacement members' schedules successfully." })
+    } catch (error) {
+        console.log(error);
+    }
+
+})
+
 router.route('/acceptRequest').post(async (req, res) => {
-    const id = req.body.request_id;
+    const id = req.body.request_id.trim();
     let token;
     try {
         token = await auth(req, res);
@@ -716,18 +759,18 @@ router.route('/acceptRequest').post(async (req, res) => {
     }
 
     if (!token) {
-        return res.send("Please login first");
+        return res.send({message: "Please login first"});
     }
 
     if (!id) {
-        return res.send("Please all enter all required data");
+        return res.send({message: "Please all enter all required data"});
     }
 
     try {
         // validate HOD
         const hod = await staff_model.findOne({ id: token.id.toLowerCase().trim() });
         if (hod.role2.toLowerCase().trim() !== "hod") {
-            return res.send("You are not authorized to perform this action");
+            return res.send({message: "You are not authorized to perform this action"});
         }
 
         let myFaculty = 0;
@@ -743,30 +786,30 @@ router.route('/acceptRequest').post(async (req, res) => {
             })
         })
         if (!myFaculty || !myDepartment) {
-            return res.send("Your faculty or department have not been found");
+            return res.send({ message: "Your faculty or department have not been found" });
         }
 
         const request = await request_model.findOne({ _id: id });
 
         if (!request) {
-            return res.send(`Request ${id} has not been found`);
+            return res.send({ message: `Request ${id} has not been found` });
         }
         if (request.status == "cancelled") {
-            return res.send(`Request ${id} has been cancelled`);
+            return res.send({ message: `Request ${id} has been cancelled` });
         }
         if (request.status != "pending") {
-            return res.send(`You have already handled request ${id}`);
+            return res.send({ message: `You have already handled request ${id}` });
         }
 
         const sender = await staff_model.findOne({ id: request.sending_staff.toLowerCase().trim() });
         if (!sender) {
-            return res.send(`Sender ${sending_staff} has not been found`);
+            return res.send({ message: `Sender ${sending_staff} has not been found` });
         }
         if (sender.faculty.toLowerCase().trim() !== myFaculty.toLowerCase().trim()) {
-            return res.send(`Request ${id} belongs to a staff member from a different faculty`);
+            return res.send({ message: `Request ${id} belongs to a staff member from a different faculty` });
         }
         if (sender.department.toLowerCase().trim() !== myDepartment.toLowerCase().trim()) {
-            return res.send(`Request ${id} belongs to a staff member from a different department`);
+            return res.send({ message: `Request ${id} belongs to a staff member from a different department` });
         }
 
         const staffAttendance = await attendance_model.findOne({ staff_id: request.sending_staff.toLowerCase().trim() });
@@ -787,12 +830,10 @@ router.route('/acceptRequest').post(async (req, res) => {
                 default:
                     request.status = "cancelled";
                     await request.save();
-                    return res.send("The target day seems to be a Friday, which is already a day off. This request has been automatically cancelled.");
+                    return res.send({ message: "The target day seems to be a Friday, which is already a day off. This request has been automatically cancelled." });
             }
 
             if (replacement_id.length === 0) {
-                res.write(`Request ${id} is an annual leave request.\nThe replacing staff member has not been specified.\n`);
-
                 // get all course ids in target day
                 let courses = [];
                 target_slots.forEach(slot => {
@@ -804,7 +845,7 @@ router.route('/acceptRequest').post(async (req, res) => {
                 const faculty = await faculty_model.findOne({ name: myFaculty });
 
                 faculty.departments.forEach(dep => {
-                    if (dep.head_id === token.id) {
+                    if (dep.head_id === token.id.toLowerCase().trim()) {
                         dep.courses.forEach(course => {
                             if (courses.indexOf(course.id) !== -1) {
                                 if (sender.role1.toLowerCase().trim() === "instructor") {
@@ -819,9 +860,19 @@ router.route('/acceptRequest').post(async (req, res) => {
 
                 const replacements = await staff_model.find({ id: { $in: replacement_ids } });
 
-                res.write(`Available replacements on target day (${target_day}) are:\n`);
+                const result = {
+                    message: `Request ${id} is an annual leave request. The replacing staff members have not been specified.\n Available replacements on target day (${target_day}) are:`,
+                    1: [],
+                    2: [],
+                    3: [],
+                    4: [],
+                    5: [],
+                    slots: target_slots,
+                    day: target_day
+                }
+
                 target_slots.forEach(slot => {
-                    res.write("Slot " + slot.id + ": ");
+                    // res.write("Slot " + slot.id + ": ");
                     let chosen = [];
                     replacements.forEach(rep => {
                         let rep_slots = 0;
@@ -849,12 +900,16 @@ router.route('/acceptRequest').post(async (req, res) => {
                             }
                         }
                     })
-                    res.write("[" + chosen + "]\n");
+                    result[slot.id] = chosen
                 })
-                return res.end();
-                // requires action from HOD 
+                request.status = "accepted";
+                request.modified = true;
+                await request.save();
+                return res.send(result);
+                // requires action from HOD - done in frontend (milestone 2) 
             } else {
                 request.status = "accepted";
+                request.modified = true;
                 // if date is in the future make an attendance record
                 if (request.request_date.getTime() > (new Date()).getTime()) {
                     staffAttendance.attendance.push({
@@ -906,11 +961,12 @@ router.route('/acceptRequest').post(async (req, res) => {
                 await sender.save();
                 await request.save();
                 await staffAttendance.save();
-                return res.send(`Request ${id} has been successfully accepted`);
+                return res.send({ message: `Request ${id} has been successfully accepted` });
             }
         }
         if (request.request_type.toLowerCase().trim() === "accidental") {
             request.status = "accepted";
+            request.modified = true;
             sender.leave_balance = sender.leave_balance - 1;
             sender.accidental_leave = sender.accidental_leave + 1;
             // if date is in the future make an attendance record
@@ -940,10 +996,11 @@ router.route('/acceptRequest').post(async (req, res) => {
             await staffAttendance.save();
             await sender.save();
             await request.save();
-            return res.send(`Request ${id} has been successfully accepted`);
+            return res.send({ message: `Request ${id} has been successfully accepted` });
         }
         if (request.request_type.toLowerCase().trim() === "sick" || request.request_type.toLowerCase().trim() === "maternity") {
             request.status = "accepted";
+            request.modified = true;
             // if date is in the future make an attendance record
             if (request.request_date.getTime() > (new Date()).getTime()) {
                 staffAttendance.attendance.push({
@@ -958,6 +1015,7 @@ router.route('/acceptRequest').post(async (req, res) => {
                         none = false;
                         record.status = "leave";
                         record.missing_hours = record.missing_hours - 30240;
+                        console.log('searching records...');
                     }
                 })
                 if (none) {
@@ -970,10 +1028,11 @@ router.route('/acceptRequest').post(async (req, res) => {
             }
             await request.save();
             await staffAttendance.save();
-            return res.send(`Request ${id} has been successfully accepted`);
+            return res.send({ message: `Request ${id} has been successfully accepted` });
         }
         if (request.request_type.toLowerCase().trim() === "compensation") {
             request.status = "accepted";
+            request.modified = true;
             // if date is in the future make an attendance record
             if (request.request_date.getTime() > (new Date()).getTime()) {
                 staffAttendance.attendance.push({
@@ -1007,10 +1066,11 @@ router.route('/acceptRequest').post(async (req, res) => {
 
             await staffAttendance.save();
             await request.save();
-            return res.send(`Request ${id} has been successfully accepted`);
+            return res.send({ message: `Request ${id} has been successfully accepted` });
         }
         if (request.request_type.toLowerCase().trim() === "change day off") {
             request.status = "accepted";
+            request.modified = true;
             sender.day_off = request.new_day_off;
             switch (request.new_day_off.toLowerCase().trim()) {
                 case "sunday": sender.schedule.sunday = []; break;
@@ -1022,7 +1082,7 @@ router.route('/acceptRequest').post(async (req, res) => {
             }
             await sender.save();
             await request.save();
-            return res.send(`Request ${id} has been successfully accepted`);
+            return res.send({ message: `Request ${id} has been successfully accepted` });
         }
     } catch (error) {
         console.log(error);
@@ -1032,31 +1092,31 @@ router.route('/acceptRequest').post(async (req, res) => {
 router.route('/rejectRequest').post(async (req, res) => {
     const id = req.body.request_id;
     const comment = req.body.hod_comment;
-    // let token;
-    // try {
-    //     token = await auth(req, res);
-    // } catch (error) {
-    //     console.log(error);
-    // }
+    let token;
+    try {
+        token = await auth(req, res);
+    } catch (error) {
+        console.log(error);
+    }
 
-    // if (!token) {
-    //     return res.send("Please login first");
-    // }
+    if (!token) {
+        return res.send("Please login first");
+    }
 
     if (!id) {
-        return res.send({message: "Please all enter all required data"});
+        return res.send({ message: "Please all enter all required data" });
     }
 
     if (comment && !isString(comment)) {
-        return res.send({message: "The comment must be of type string"})
+        return res.send({ message: "The comment must be of type string" })
     }
 
     try {
         // validate HOD
-        // const hod = await staff_model.findOne({ id: token.id.toLowerCase().trim() });
-        // if (hod.role2.toLowerCase().trim() !== "hod") {
-        //     return res.send("You are not authorized to perform this action");
-        // }
+        const hod = await staff_model.findOne({ id: token.id.toLowerCase().trim() });
+        if (hod.role2.toLowerCase().trim() !== "hod") {
+            return res.send("You are not authorized to perform this action");
+        }
 
         let myFaculty = 0;
         let myDepartment = 0;
@@ -1064,44 +1124,44 @@ router.route('/rejectRequest').post(async (req, res) => {
         const faculties = await faculty_model.find();
         faculties.forEach(faculty => {
             faculty.departments.forEach(dep => {
-                //token.id.toLowerCase().trim()
-                if (dep.head_id.toLowerCase().trim() === "ac-7") {
+                if (dep.head_id.toLowerCase().trim() === token.id.toLowerCase().trim()) {
                     myFaculty = faculty.name;
                     myDepartment = dep.id;
                 }
             })
         })
         if (!myFaculty || !myDepartment) {
-            return res.send({message: "Your faculty or department have not been found"});
+            return res.send({ message: "Your faculty or department have not been found" });
         }
 
         const request = await request_model.findOne({ _id: id });
 
         if (!request) {
-            return res.send({message: `Request with ${id} has not been found`});
+            return res.send({ message: `Request with ${id} has not been found` });
         }
         if (request.status.toLowerCase().trim() === "cancelled") {
-            return res.send({message: `Request ${id} has been cancelled`});
+            return res.send({ message: `Request ${id} has been cancelled` });
         }
         if (request.status.toLowerCase().trim() !== "pending") {
-            return res.send({message: `You have already handled request ${id}`});
+            return res.send({ message: `You have already handled request ${id}` });
         }
 
         const sender = await staff_model.findOne({ id: request.sending_staff.toLowerCase().trim() });
         if (!sender) {
-            return res.send({message: `Sender ${sending_staff} has not been found`});
+            return res.send({ message: `Sender ${sending_staff} has not been found` });
         }
         if (sender.faculty !== myFaculty) {
-            return res.send({message: `Request ${id} belongs to a staff member from a different faculty`});
+            return res.send({ message: `Request ${id} belongs to a staff member from a different faculty` });
         }
         if (sender.department !== myDepartment) {
-            return res.send({message: `Request ${id} belongs to a staff member from a different department`});
+            return res.send({ message: `Request ${id} belongs to a staff member from a different department` });
         }
 
         request.status = "rejected";
+        request.modified = true;
         request.hod_comment = comment;
         await request.save();
-        return res.send({message: `Request ${id} has been rejected.`});
+        return res.send({ message: `Request ${id} has been rejected.` });
     } catch (error) {
         console.log(error);
     }

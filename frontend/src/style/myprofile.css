@@ -1,9 +1,13 @@
 
 
 .infocard{
+    display: flex;
+    flex-direction: column;
+    max-width: 540px;
+    margin-right: auto;
     border-radius: 25px;
-    padding: 30px;
-    margin: 20px;
+    padding: 7%;
+    margin: 20px auto;
     background-color: #9EA3C2;
 }
 

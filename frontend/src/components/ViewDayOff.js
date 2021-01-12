@@ -30,7 +30,7 @@ export class ViewDayOff extends Component {
 
         console.log(member);
 
-        axios.post('http://localhost:3001/viewDayOff', member)
+        axios.post('http://localhost:3001/viewDayOff', member, {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 if (response.data.length > 0) {
                     this.setState({
