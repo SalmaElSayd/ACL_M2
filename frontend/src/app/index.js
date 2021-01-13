@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 
 function App() {
+ 
   return (
     <div className="App">
       <div className="jss100">
@@ -19,8 +20,12 @@ function App() {
         <Router>
           
       <Switch>
+<<<<<<< HEAD
         <Route exact path="/login" component = {Login} />
         <Route  path="/hr" component = {Hrc} />
+=======
+        <Route  exact path="/" component = {Login} />
+>>>>>>> 9c02d197cb5999011f90dfa57bba8d59721b2da1
         <Route  path="/" component = {Public} />
       
 
