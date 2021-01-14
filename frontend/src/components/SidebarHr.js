@@ -37,6 +37,12 @@ export const SidebarHrc = [
         className: 'nav-text'
     },
     {
+        title: 'Update Profile',
+        path: '/updateProfile',
+        icon: <AiIcons.AiOutlineUserAdd/>,
+        className: 'nav-text'
+    }, 
+    {
         title: 'update course',
         path: '/updatecourse',
         icon: <FaIcons.FaDiscourse />,

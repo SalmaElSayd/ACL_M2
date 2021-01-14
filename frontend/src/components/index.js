@@ -125,6 +125,4 @@ export {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance, Re
     ,updatedepartmentHr,deletedepartmentHr,addcourseHr,updatecourseHr,deletecourseHr,
     viewattendanceRecHR,
     addmissingSignInHr,addmissingSignOutHr,
-    updateSalaryHr,viewStaffmemberMissinghoursHr,viewStaffmemberMissingdaysHr,
-    updateSalaryHr,viewStaffmemberMissinghoursHr,viewStaffmemberMissingdaysHr
-}
+    updateSalaryHr,viewStaffmemberMissinghoursHr,viewStaffmemberMissingdaysHr}

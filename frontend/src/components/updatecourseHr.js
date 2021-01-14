@@ -60,12 +60,12 @@ const handlecredit_hourseChange = (e)=>{
 
         return (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 30 }}>
-                <h1>
-           update a course 
-            </h1>
+               
             
             <div className='form-loc'>
-
+            <h1>
+           update a course 
+            </h1>
             <form onSubmit={onSubmit}>
         <input className="form-control" placeholder="faculty name"  placeholder="faculty name" type="text" onChange={handleFnameChange} />
         <br />
@@ -78,7 +78,7 @@ const handlecredit_hourseChange = (e)=>{
 
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
-        <label  className="labelhr" >{resMessage}</label>
+        <label  >{resMessage}</label>
             </div>
             <div className="gobackbutton">
              <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
