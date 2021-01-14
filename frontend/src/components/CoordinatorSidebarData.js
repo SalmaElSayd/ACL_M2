@@ -81,7 +81,7 @@ export const CoordinatorSidebarData = [
         className: 'nav-text'
     },
     {
-        title: 'View Send Replacement Request',
+        title: 'View Sent Replacement Request',
         path: '/academicMember/viewSendReplacementRequest',
         icon: <MdIcons.MdViewHeadline />,
         className: 'nav-text'
@@ -117,7 +117,7 @@ export const CoordinatorSidebarData = [
         className: 'nav-text'
     },
     {
-        title: 'Upadte Course Slot',
+        title: 'Update Course Slot',
         path: '/updateSlot',
         icon: <MdIcons.MdSupervisorAccount />,
         className: 'nav-text'

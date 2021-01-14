@@ -51,11 +51,11 @@ const handleNewPasswordChange = (e)=>{
 }
 if (firstLogin){
   return (
-    <body >
       <div className="login">
-        <h2>
+
+        <h1>
             Log in
-            </h2>
+            </h1>
             
         
 
@@ -67,12 +67,11 @@ if (firstLogin){
             </form>
         <label>{resMessage}</label>
     </div>
-    </body>
   );}
   else{
     return (
-    <div className='loginbody'>
-      <div className="login">
+     <div className='login'> 
+
         <h1>
             Log in
             </h1>
@@ -86,7 +85,7 @@ if (firstLogin){
             </form>
         <label>{resMessage}</label>
     </div>
-    </div>)
+    )
   }
 }
 
