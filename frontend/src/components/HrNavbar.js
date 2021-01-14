@@ -4,6 +4,10 @@ import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import { SidebarHrc } from './SidebarHr';
 import { IconContext } from 'react-icons';
+import '../style/Navbar.css';
+import '../style/scrollable.css';
+
+
 
 function HrNavbar() {
     const [sidebar, setSidebar] = useState(false)

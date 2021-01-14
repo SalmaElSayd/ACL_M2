@@ -28,7 +28,7 @@ export class ViewCourseCoverage extends Component {
             course_id: this.state.course_id
         }
 
-        axios.post('http://localhost:3001/viewCourseCoverage', course)
+        axios.post('http://localhost:3001/viewCourseCoverage', course, {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 this.setState({
                     coverage: response.data

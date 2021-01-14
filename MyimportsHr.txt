@@ -1,0 +1,36 @@
+// frontend/componenets/ index.js
+
+import HrNavbar from './HrNavbar'
+import Hrc from './Hrc'
+import Locationc from './LocationC'
+import addlocation from './addlocation'
+import updatelocation from './updatelocation'
+import  deletelocation from  './deletelocation'
+import addStaffHr from './addStaffHr'
+import updatestaff from './updateStaffHr'
+import deleteStaffHr from './deleteStaffHr'
+import addfacultyHr from './addfaculty'
+import updatefacultyHr from './updatefacultyHr'
+import deletefacultyHR from './deletefacultyHR'
+import adddepartmentHr from './adddepartmentHr'
+import updatedepartmentHr from './updatedepartmentHr'
+import deletedepartmentHr from './deletedepartmentHr'
+import addcourseHr from './addcourseHr'
+import updatecourseHr from './updatecourseHr'
+import deletecourseHr from './deletecourseHr'
+import viewattendanceRecHR from './viewattendanceRecHR'
+import addmissingSignInHr from './addmissingSignInHr'
+import addmissingSignOutHr from './addmissingSignOutHr'
+import updateSalaryHr from './updateSalaryHr'
+import viewStaffmemberMissinghoursHr from './viewStaffmemberMissinghoursHr'
+import viewStaffmemberMissingdaysHr from './viewStaffmemberMissingdaysHr'
+
+
+
+export {HrNavbar,Hrc,Locationc,addlocation,
+    updatelocation,deletelocation,addStaffHr,updatestaff,deleteStaffHr
+    ,addfacultyHr,updatefacultyHr,deletefacultyHR,adddepartmentHr
+    ,updatedepartmentHr,deletedepartmentHr,addcourseHr,updatecourseHr,deletecourseHr,
+    viewattendanceRecHR,
+    addmissingSignInHr,addmissingSignOutHr,
+    updateSalaryHr,viewStaffmemberMissinghoursHr,viewStaffmemberMissingdaysHr}

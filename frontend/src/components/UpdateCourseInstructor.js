@@ -47,7 +47,7 @@ export class UpdateCourseInstructor extends Component {
         }
 
         console.log(request);
-        axios.post('http://localhost:3001/updateCourseInstructor', request)
+        axios.post('http://localhost:3001/updateCourseInstructor', request, {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 if (response.data.message) {
                     this.setState({

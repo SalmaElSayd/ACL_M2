@@ -8,25 +8,25 @@ export const InstructorSidebarData = [
     {
         title: 'Home',
         path: '/home',
-        icon: <AiIcons.AiFillHome />,
+        icon: <AiIcons.AiOutlineUser />,
         className: 'nav-text'
     },
     {
         title: 'Sign in or out',
         path: '/signinout',
-        icon: <AiIcons.AiOutlineUserAdd/>,
+        icon: <AiIcons.AiOutlineFieldTime/>,
         className: 'nav-text'
     },
     {
         title: 'View My Attendance',
         path: '/viewAttendance',
-        icon: <AiIcons.AiOutlineUserAdd/>,
+        icon: <AiIcons.AiFillDatabase/>,
         className: 'nav-text'
     },
     {
         title: 'Reset Password',
         path: '/resetPassword',
-        icon: <AiIcons.AiOutlineUserAdd/>,
+        icon: <AiIcons.AiOutlineKey/>,
         className: 'nav-text'
     },
     {
@@ -48,7 +48,7 @@ export const InstructorSidebarData = [
         className: 'nav-text'
     },
     {
-        title:'Course Assignment',
+        title:'View Slots',
         path:'/viewSlots',
         icon: <AiIcons.AiFillSchedule />,
         className: 'nav-text'

@@ -10,7 +10,7 @@ export class ViewRequests extends Component {
             requests: []
         }
 
-        axios.get('http://localhost:3001/viewRequests')
+        axios.get('http://localhost:3001/viewRequests', {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 console.log(response.data)
                 if (response.data.length > 0) {
@@ -31,7 +31,7 @@ export class ViewRequests extends Component {
     render() {
         return (
             <div className='table-loc'>
-                <h3>Requests:</h3>
+                <h3>Requests</h3>
                     <table className='table-hover'>
                         <thead>
                             <tr>
@@ -51,9 +51,9 @@ export class ViewRequests extends Component {
                                         <td>{item['_id']}</td>
                                         <td>{item['sending_staff']}</td>
                                         <td>{item['receiving_staff']}</td>
-                                        <td>{item['request_type']}</td>
                                         <td>{item['request_date']}</td>
                                         <td>{item['date_sent']}</td>
+                                        <td>{item['request_type']}</td>
                                         <td>{item['status']}</td>
                                     </tr>
                                 );

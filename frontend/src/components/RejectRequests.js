@@ -37,7 +37,7 @@ export class RejectRequests extends Component {
             comment: this.state.comment
         }
 
-        axios.post('http://localhost:3001/rejectRequest', request)
+        axios.post('http://localhost:3001/rejectRequest', request, {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 if (response.data.message) {
                     this.setState({
@@ -57,7 +57,7 @@ export class RejectRequests extends Component {
     render() {
         return (
             <div className='form-loc'>
-                <h3>Reject Request:</h3>
+                <h3>Reject Request</h3>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Request ID</label>

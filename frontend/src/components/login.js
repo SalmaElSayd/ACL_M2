@@ -54,20 +54,16 @@ if (firstLogin){
   return (
     <body >
       <div className="login">
-        <h1>
+        <h2>
             Log in
-            </h1>
+            </h2>
             
         
 
             <form onSubmit={onSubmit}>
         <input placeholder="email" type="email" onChange={handleEmailChange} />
-<<<<<<< HEAD
-        <input placeholder="password" type="password" onChange={handlePasswordChange} />
-=======
         <input placeholder="password" type="password"onChange={handlePasswordChange} />
         <input placeholder="new password" type="password"onChange={handleNewPasswordChange} />
->>>>>>> 9c02d197cb5999011f90dfa57bba8d59721b2da1
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>
@@ -87,6 +83,7 @@ if (firstLogin){
             <form onSubmit={onSubmit}>
         <input placeholder="email" type="email" onChange={handleEmailChange} />
         <input placeholder="password" type="password"onChange={handlePasswordChange} />
+        <input placeholder="new password" type="password"onChange={handleNewPasswordChange} />
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>

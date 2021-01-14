@@ -12,13 +12,14 @@ const { ReplSet } = require('mongodb');
 require('dotenv').config()
 ///////////////////////////////////////////////////////////////////////////////////
 async function auth(req, res){
+  console.log('authenticating')
+  console.log(req.headers)
   let is_blacklisted =true;
-  let token_entry = await token_blacklist.findOne({token:req.header('auth-token')})
+  let token_entry = await token_blacklist.findOne({token:req.headers.authorisation})
   console.log(token_entry);
   if (!token_entry){
-  
-  const result = jwt.decode(req.header('auth-token'), process.env.TOKEN_SECRET);
-  // console.log(result);
+  const result = jwt.decode(req.headers.authorisation, process.env.TOKEN_SECRET);
+  console.log(result);
   if(!result){
       return false;
   }  
@@ -28,9 +29,10 @@ async function auth(req, res){
       return false;
   }
 }
+
+
 async function getNextSequenceValue(sequenceName){
   const fields = await counters_model.countDocuments();
-  console.log(fields);
   console.log("done");
   if (fields<2){
       var acid =await  new counters_model({
@@ -61,6 +63,7 @@ async function getNextSequenceValue(sequenceName){
       // return res.sequence_value;
       return seq;
 }
+
 //--------------------------------------------------------------------------------
 //1- view their schedule
 router.route('/academicMember/viewSchedule')
@@ -89,7 +92,6 @@ router.route('/academicMember/viewSchedule')
       schedule
   });
 });
-
 //------------------------------------------------------------------------------------
 //2a_1- view send replacement request
 router.route('/academicMember/viewSendReplacementRequest')
@@ -118,8 +120,6 @@ if(!requests){
       error:"Here are all your send replacements requests.",
       requests
   });
-
-  
   
 });
 //2-a_2 view received replacement requests
@@ -192,165 +192,6 @@ catch (err) {
   }
 });
 
-
-// //2-a_2 view received replacement requests
-// router.route('/academicMember/viewReceivedReplacementRequest')
-// .get(async (req, res)=>{
-//   const result = await auth(req,res);
-//     console.log(result);
-//     if(!result){
-//         return res.send("Authenication failed")
-//     }
-//     const profile  = await staff_model.findOne({id:result.id});
-//     if(!profile){
-//         return res.send("This account does not exist")
-//     }
-//     if (profile.role1.toLowerCase().trim()!=="ta"){
-//       return res.send("Only TAs can accept access")
-//   }
-
-// const requests= await request_model.find({receiving_staff:profile.id, request_type:"replacement"}) ;
-// if(!requests){
-//   return res.json({
-//     error:"you don't have any received replacement request(s)."
-// });
-// }
-//     return res.json({
-//       error:"Here are all your received replacements requests.",
-//       requests
-//     });
-// });
-
-// //2b- send a replacement request
-// router.route('/academicMember/SendReplacementRequest')
-// .post(async (req, res)=>{
-//   const result = await auth(req,res);
-//   console.log(result);
-//   if(!result){
-//       return res.write("Authenication failed")
-//   }
-//   const profile  = await staff_model.findOne({id:result.id});
-//   if(!profile){
-//       return res.write("This account does not exist")
-//   }
-//   if (profile.role1.toLowerCase().trim()!=="ta"){
-//     return res.write("Only TAs can accept access")
-// }
-// let newRequest = new request_model({
-//   sending_staff:profile.id,   
-//   receiving_staff:req.body.receiving_staff, 
-//   date_sent:new Date(Date.now()),
-//   request_date:new Date(req.body.request_date), 
-//   request_type:"replacement",
-//   reason:req.body.reason,
-//   req_slot:req.body.req_slot,
-//   course_id:req.body.course_id
-// });
-
-// try{  
-//   if(!newRequest.course_id || !newRequest.receiving_staff || !newRequest.req_slot || !newRequest.request_date){
-//     return res.json({
-//       error:"please fill all the requirements."
-//   });
-//   }
-//   const f = await faculty_model.findOne({name:profile.faculty});
-//   let accept=false;
-//   f.departments.forEach(d=>{
-//     if(d.id===profile.department){
-//       d.courses.forEach(course => {
-//         if(course.id===newRequest.course_id){
-//           accept=true;
-//         }
-//       });
-//     }
-//     });
-//            if(!accept){
-//              return res.send("this course is not in the department.Please check again.")
-//                }
-                        
-//   var staff_replace= await staff_model.findOne({id:newRequest.receiving_staff});
-//   let check=staff_replace.role1;
-//   if(check.toLowerCase().trim()!=='ta'){
-//     return res.send("You can only send replacement requests to another TA.");
-//   }
-//   const faculties = await faculty_model.find();
-//   faculties.forEach(faculty => {
-//       faculty.departments.forEach(dep => {
-//           if (dep.id === profile.department) {
-//                 if (dep.id===staff_replace.department) {
-//                     dep.courses.forEach(async(course)=>{
-//                       if(course.id===newRequest.course_id){
-//                         // loop around sending ta to check if slot is in his schedule
-//                           var day=newRequest.request_date.getDay();
-//                           let targetDay=0;
-//                             switch(day){
-//                               case 0: targetDay=profile.schedule.sunday; break;
-//                               case 1:targetDay=profile.schedule.monday; break;
-//                               case 2:targetDay=profile.schedule.tuesday; break;
-//                               case 3:targetDay=profile.schedule.wednesday; break;
-//                               case 4:targetDay=profile.schedule.thursday; break;
-//                               case 6:targetDay=profile.schedule.saturday; break;
-//                               default:
-//                                 return res.send("The day chosen was friday which is not a working day. Please choose a working day.");
-//                               }
-//                             let available=false;
-//                             targetDay.forEach(slot=>{
-//                               if(slot.id===newRequest.req_slot.id){
-//                                 available=true;
-//                                 }
-//                             });
-//                             if(available){
-//                               // check if slot is available for other ta
-//                                 var dayr=newRequest.request_date.getDay();
-//                                 let targetDayr=0;
-//                                   switch(dayr){
-//                                     case 0: targetDayr=staff_replace.schedule.sunday; break;
-//                                     case 1:targetDayr=staff_replace.schedule.monday; break;
-//                                     case 2:targetDayr=staff_replace.schedule.tuesday; break;
-//                                     case 3:targetDayr=staff_replace.schedule.wednesday; break;
-//                                     case 4:targetDayr=staff_replace.schedule.thursday; break;
-//                                     case 6:targetDayr=staff_replace.schedule.saturday; break;
-//                                     default:
-//                                       return res.send("The day chosen was friday which is not a working day. Please choose a working day.");
-//                                     }
-//                                   let availabler=true;
-//                                   targetDayr.forEach(slot=>{
-//                                     if(slot.id===newRequest.req_slot.id){
-//                                       availabler=false;
-//                                       }
-//                                   });
-//                                   if(availabler){
-//                                     await newRequest.save();
-//                                     return res.send("Your replacement request has been send."); 
-//                                   }
-//                                   else{
-//                                     return res.send("You can not send a replacement request to this TA as he/she is busy at this slot.");
-//                                   }
-//                              }
-//                             else{
-//                               return res.send("You do not have this slot in your schedule. Please check the date or the slot.");
-//                             }
-                        
-//                       }
-
-                      
-//                     })
-//               }
-//               else{
-//                   return res.send({
-//                   error:"You can not send the request as the TA you are sending is not in the same department."
-//                   });
-//                 }
-//               }
-//             })
-//         })
-            
-        
-// }
-// catch (err) {
-//   console.log(err);
-//   }
-// });
 //-------------------------------------------------------------------------------------------
 //3- send a slot linking request       // goes to coordinator automatically
 router.route("/academicMember/slotLinkingRequest")
@@ -427,14 +268,14 @@ router.route('/academicMember/changeDayOff')
   const result = await auth(req,res);
   console.log(result);
   if(!result){
-      return res.send("Authenication failed")
+    return res.json({message:"Authenication failed"})
   }
   const profile  = await staff_model.findOne({id:result.id});
   if(!profile){
-      return res.send("This account does not exist")
+    return res.json({message:"This account does not exist"})
   }
   if (profile.role1.toLowerCase().trim()!=="ta"){
-    return res.send("Only TAs can accept access")
+    return res.json({message:"Only TAs can accept access"})
 }
   let hod=0;
   const faculties = await faculty_model.find();
@@ -451,15 +292,15 @@ router.route('/academicMember/changeDayOff')
     date_sent:new Date(Date.now()),
     request_type:"change day off",
     reason: req.body.reason,
-    request_date:new Date(req.body.request_date),
+    //request_date:new Date(req.body.request_date),
     new_day_off:req.body.new_day_off
   });
   try{
     const newDay=newRequest.new_day_off;
   if(!newDay.length){
     return res.json({
-      error:"you didn't add a new day off yet."
-  });
+      message:"you didn't add a new day off yet."
+    });
   }
   let foo=true;
     let day=newRequest.new_day_off.toLowerCase().trim();
@@ -483,16 +324,20 @@ router.route('/academicMember/changeDayOff')
                     foo=false;
                   } break;
                   default:
-                    return res.send("The day chosen is not a working day/correct day. Please check your chosen day.");
+                    return res.json({message:"The day chosen is not a working day/correct day. Please check your chosen day."});
                         } 
   if(foo){
     await newRequest.save();
-    return res.send("Your change day off request has been send to HOD ( Head of your department)") ;
+    return res.json({
+      message:"Your change day off request has been send to HOD ( Head of your department)"
+    }) ;
   }
           else{
   return res.json({
-    error:"you added your already day off.Please choose another one."
-});
+    message:"you added your already day off.Please choose another one."
+
+  }
+);
 }
   }
   catch (err) {
@@ -733,6 +578,74 @@ return res.status(401).send('Request type is required.Please add a request Type.
       }
       });
 
+      //--------------------------------------------------------------------------------
+//6- notify if request accepted or rejected
+
+router.route('/academicMember/notifications')
+.get(async (req, res)=>{
+  const result = await auth(req,res);
+  console.log(result);
+  if(!result){
+      return res.send("Authenication failed")
+  }
+  const profile  = await staff_model.findOne({id:result.id});
+  if(!profile){
+      return res.send("This account does not exist")
+  } 
+  if (profile.role1.toLowerCase().trim()!=="ta"){
+    return res.send("Only TAs can accept access")
+}
+  const requests=await request_model.find({sending_staff:profile.id, seen:false});
+    if(requests.lenghth==0){
+        return res.json({
+            error:"you dont have any notification."
+        });
+    } 
+ 
+    requests.forEach(async request=>{
+      if(request.modified===true){  
+        
+        request.modified=false;
+        // request.seen=true;
+        request.date_modified=new Date(Date.now());
+        await request.save();
+    }})
+
+    return res.json({
+      error:"Your request has been modified",
+    requests});
+
+});
+
+
+router.route('/academicMember/setNotificationSeen')
+.post(async (req, res)=>{
+  const result = await auth(req,res);
+  console.log(result);
+  console.log(req.body.id)
+  if(!result){
+      return res.send("Authenication failed")
+  }
+  const profile  = await staff_model.findOne({id:result.id});
+  if(!profile){
+      return res.send("This account does not exist")
+  } 
+  if (profile.role1.toLowerCase().trim()!=="ta"){
+    return res.send("Only TAs can accept access")
+}
+try {
+  const requests=await request_model.updateOne({_id:req.body.id},{$set:{seen:true}});
+
+} catch (error) {
+  return res.json({
+    error:"Your request has been modified",
+  requests});
+}
+    
+
+});
+
+
 //-----------------------------------------------------------------------------------------
 // 7- view all status of requests
 ///// view all submitted requests ////
@@ -815,7 +728,7 @@ router.route('/academicMember/viewRejectedRequest')
 }
   const requests = await request_model.find({sending_staff:profile.id , status:"rejected"});
 try{
-    if(!requests[0]){
+    if(requests.length===0){
         return res.json({
             error:"you dont have any rejected request(s) to view."
         });
@@ -845,7 +758,7 @@ router.route('/academicMember/viewPendingRequest')
 }
 try{
   const requests = await request_model.find({sending_staff:profile.id , status:"pending"});
-    if(requests.lenghth==0){
+    if(requests.lenghth===0){
         return res.json({
             error:"you dont have any pending request(s) to view."
         });
@@ -892,17 +805,10 @@ router.route('/academicMember/cancelRequest')
     var d = datereq.getDate();
     var m = datereq.getMonth()+1;
     var y= datereq.getFullYear();  
-   /* 
-if((m>(requests[0].request_date.getMonth()+1) && y>=(requests[0].request_date).getFullYear() && d<(requests[0].request_date).getDate())||
- (m<(requests[0].request_date.getMonth()+1) && y>(requests[0].request_date).getFullYear() && d>=(requests[0].request_date).getDate())||
-   (m===(requests[0].request_date).getMonth()+1 && y===(requests[0].request_date).getFullYear() && d>(requests[0].request_date).getDate())||
-   (m>=(requests[0].request_date).getMonth()+1 && y>=(requests[0].request_date).getFullYear() && d>(requests[0].request_date).getDate()) ){
-    
-  */
+
    if(requests[0].request_date>datereq){ 
       await request_model.updateOne({_id:reqId},{status:"cancelled"});
-      return res.json({
-        error:"your request has been cancelled" });  
+      return res.json("your request has been cancelled" );  
     }
     else{
       return res.json({

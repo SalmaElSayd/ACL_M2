@@ -30,6 +30,10 @@ const slot = new mongoose.Schema({
 });
 
 const request = new mongoose.Schema({
+    seen:{
+        type:Boolean,
+        default:false
+    },
     sending_staff:{
         type:String,
         required:true
@@ -40,8 +44,8 @@ const request = new mongoose.Schema({
     },
     request_date:{
         type:Date,
-        required:true
-    },
+         default:new Date(Date.now())
+        },
     replacement_id: {
         type:[String],
         default:[]
@@ -77,7 +81,15 @@ const request = new mongoose.Schema({
     new_day_off:{
         type:String
     },
-    req_slot:slot
+    req_slot:slot,
+    modified:{
+        type:Boolean,
+        default:false
+    },
+    date_modified:{
+        type:Date,
+        default:new Date(Date.now())
+        }
 });
 
 module.exports=mongoose.model('request', request);

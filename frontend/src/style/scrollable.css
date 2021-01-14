@@ -1,0 +1,8 @@
+.enable-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.enable-scroll {
+    overflow:auto;
+    height: calc(100vh);
+}
