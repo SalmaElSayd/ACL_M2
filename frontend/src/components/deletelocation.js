@@ -1,7 +1,11 @@
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
-import '../style/loginstyle.css'
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
+
 
 
 function Deletelocation(){
@@ -21,7 +25,6 @@ function Deletelocation(){
     .then(res => {
      
         setResMessage(res.data.mess)
-      window.location='/hr'
 
       })
   }
@@ -30,20 +33,30 @@ function Deletelocation(){
         setId(id);
   }
 
+  const handleHome=(e)=>{
+    window.location='/home'
+}
+
+
         return (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 30 }}>
                 <h1>
            Delete a Location 
             </h1>
-            
+            <div className='form-loc'>
+
             <form  onSubmit={onSubmit}>
-        <input placeholder="id" type="text" onChange={handleIdChange} />
+        <input  className="form-control"   placeholder="Location id" type="text" onChange={handleIdChange} />
         <small className="form-text text-muted">e.g. C1.101 </small>
         <br />
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
 
         </form>
-        <label>  {resMessage}</label>
+        <label className="labelhr">  {resMessage}</label>
+            </div>
+            <div className="gobackbutton">
+                        <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
+                        </div>
             </div>
         );
     

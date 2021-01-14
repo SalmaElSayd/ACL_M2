@@ -452,6 +452,7 @@ inst.route('/instructor/updateCourseMem').post(async (req,res) =>{
             member.courses.splice(s,1);
             member.courses.push(targetCourse);
             courseSched.coordinator_id = " "
+            goingToCourse.academic_member_ids.push(member.id)
             courseSched.academic_member_ids.forEach((m)=>{
                 if (m == member.id){
                     courseSched.academic_member_ids.splice(courseSched.academic_member_ids.indexOf(m),1)

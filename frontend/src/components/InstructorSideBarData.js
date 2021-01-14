@@ -48,7 +48,7 @@ export const InstructorSidebarData = [
         className: 'nav-text'
     },
     {
-        title:'Course Assignment',
+        title:'View Slots',
         path:'/viewSlots',
         icon: <AiIcons.AiFillSchedule />,
         className: 'nav-text'

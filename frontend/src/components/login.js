@@ -4,7 +4,8 @@ import setAuthToken from '../api'
 import {Redirect,  Link , useHistory} from 'react-router-dom'
 import '../style/loginstyle.css'
 
-function Login() {
+function Login() { 
+  
     const [email, setEmail]=useState('');
     const [password, setPassword]=useState('');
     const [newPass, setNewPassword]=useState();
@@ -53,9 +54,9 @@ if (firstLogin){
   return (
     <body >
       <div className="login">
-        <h1>
+        <h2>
             Log in
-            </h1>
+            </h2>
             
         
 
@@ -82,6 +83,7 @@ if (firstLogin){
             <form onSubmit={onSubmit}>
         <input placeholder="email" type="email" onChange={handleEmailChange} />
         <input placeholder="password" type="password"onChange={handlePasswordChange} />
+        <input placeholder="new password" type="password"onChange={handleNewPasswordChange} />
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>

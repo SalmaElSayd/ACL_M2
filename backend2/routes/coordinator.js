@@ -30,7 +30,6 @@ async function auth(req, res){
         return false;
     }
 }
-
 router.route('/coordinator/viewSlotLinkingRequests').get(async(req,res)=>{
     let token = 0;
     try {
@@ -207,6 +206,7 @@ router.route('/coordinator/rejectSlotLinkingRequest').post(async(req, res)=>{
         console.log(error);
     }
 })
+
 
 
 router.route('/coordinator/addSlots').post(async(req,res)=>{

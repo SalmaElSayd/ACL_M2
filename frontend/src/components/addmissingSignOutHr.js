@@ -1,10 +1,13 @@
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
-import '../style/idk.css'
 import Button from 'react-bootstrap/Button'
 import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
+
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
 
 
 
@@ -46,20 +49,18 @@ const handleHome=(e)=>{
 }
 
     return (
-            <div >
+        <div className='form-loc'>
                 <h1>
-          add missing signOut
+          add missing sign-Out
             </h1>
             
             <form className="submit" onSubmit={onSubmit}>
-        <input className="pt" placeholder="staff id" type="text" onChange={handleIdChange} />
+        <input className="form-control" placeholder="staff id" type="text" onChange={handleIdChange} />
         <br />
-
-
         <Datetime  onChange={handlesignInChange} />
 
 
-        <input className ='btn btn-primary btn-block btn-large' type="submit" />
+        <input className ='btn btn-primary  btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>
 <div className="gobackbutton">

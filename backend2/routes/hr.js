@@ -38,6 +38,7 @@ async function auth(req, res){
 }
 
 
+
 async function getNextSequenceValue(sequenceName){
     const fields = await counters_model.countDocuments();
     console.log(fields);
@@ -706,16 +707,20 @@ router.route('/hr/addFaculty')
     const result = await auth(req,res);
 
     console.log(result);
-
+try{
     if(!result){
         return res.send({mess:"Authenication failed"})
     }
+
 if (result.role1.toLowerCase().trim() == "hr"){
-try{
-    if(!req.body.name){
+    try{
+
+    if(!req.body.faculty_name){
         return res.send({mess:"you need to enter a faculty name  "})
     }
-    if(await (faculty_model.findOne({name:req.body.name}))){
+    
+        var faculty= await faculty_model.findOne({name:req.body.faculty_name})
+    if(faculty ){
         return res.send({mess:"this faculty already exsits "})
     }
     if(!req.body.dep_id){
@@ -725,29 +730,42 @@ try{
     if(!req.body.dep_name){
         return res.send({mess:"you need to add a department name  "})
     }
-    if(!req.body.dep_id){
-        return res.send({mess:"you need to add a department id  "})
-
+    if(!req.body.head_id){
+        return res.send({mess:"you need to enter the department head id "})
     }
+    var staff_member = await staff_model.findOne({id:req.body.head_id});
+    if (!staff_member){
+        return res.send({mess:"This staff_memeber does not exist"});
+    }
+
     if(!req.body.course_id){
         return res.send({mess:"you need to add a course id  "})
     }
-
-    var faculty=new faculty_model({
-        name:req.body.name    })    
+   
+    
+    var faculty1=new faculty_model({
+        name:req.body.faculty_name    })    
     var dep={ id:req.body.dep_id,
-            name:req.body.dep_name,courses:[{id:req.body.course_id}]}
+            name:req.body.dep_name,
+            head_id:req.body.head_id,
+            courses:[{id:req.body.course_id,coverage:1}]}
   
- faculty.departments.push(dep);
-    console.log(faculty);
-await faculty.save()
+ faculty1.departments.push(dep);
+    console.log(faculty1);
+    
+ await faculty1.save()
+
 res.send({mess:"added "})
 }catch(err){
-    return res.send({mess:"err"})
+    console.log(err)
+    return res.send({mess:"error" })
 }
 }
 else{
     return res.send({mess:"Only HR can add a faculty"})
+}
+}catch(err){
+    return res.send({mess:"error" })
 }
 });
 
@@ -1419,8 +1437,9 @@ console.log(att)
 
  }
 if(show.length>0){
-    return res.send({att:show})
-}else{
+    let show2 = [...new Set(show)];
+
+    return res.send({att:show2})}else{
     return res.send({mess:"no staff members with missing hours"})
 }
 
@@ -1458,7 +1477,10 @@ console.log(att)
 
  }
 if(show.length>0){
-    return res.send({att:show})
+
+let show2 = [...new Set(show)];
+
+    return res.send({att:show2})
 }else{
     return res.send({mess:"no staff members with missing days"})
 }

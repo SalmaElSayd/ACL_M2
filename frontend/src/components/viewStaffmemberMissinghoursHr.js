@@ -25,8 +25,8 @@ const onSubmit = (e)=>{
   axios.post('http://localhost:3001/hr/viewStaffmemberMissinghours',{},{headers:{authorisation:localStorage.getItem('jwtToken')}})
   .then(res => {
     console.log(res.data)
-    if (res.data.att > 0) {
-        setAttendance([res.data.att])
+    if (res.data.att) {
+        setAttendance(res.data.att)
         
     }
   })
@@ -40,27 +40,30 @@ const onSubmit = (e)=>{
 
 
 const handleHome=(e)=>{
-    window.location='/hr'
+    window.location='/home'
 }
 
 
 
 
         return (
-            <div className="enable-scroll" >
+            <div >
                 <h1>
-         view staff memebers with missing hours 
+                View Staff Memebers with Missing Hours
             </h1>
+
+            <div className='form-loc'>
 
             <form className="submit" onSubmit={onSubmit}>
        
             <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
 
-        <table className='table-hover'>
+            <table className='table-hover'>
                         <thead>
                             <tr>
-                                <th>Staff id </th>
+                                <th>Staff id</th>
+                                
                                 
                             </tr>
                         </thead>
@@ -70,7 +73,7 @@ const handleHome=(e)=>{
                                     <tr key={index}>
                                         
                                         <td>{item}</td>
-                                      
+                                       
                                         
                                     </tr>
                                 );
@@ -78,8 +81,13 @@ const handleHome=(e)=>{
                         </tbody>
                     </table>
 
-                    <h1>hi</h1>
+
+
+
+
+       
         <label>{resMessage}</label>
+        </div>
 <div className="gobackbutton">
          <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
          </div>
