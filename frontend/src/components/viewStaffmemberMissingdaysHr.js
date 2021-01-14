@@ -23,15 +23,14 @@ const onSubmit = (e)=>{
   }
   axios.post('http://localhost:3001/hr/viewStaffmemberMissingdays',{},{headers:{authorisation:localStorage.getItem('jwtToken')}})
   .then(res => {
-      console.log(res.data)
-    if (res.data.att > 0) {
-        setAttendance([res.data.att])
+      console.log(res.data.att[0])
+    if (res.data.att ) {
+        setAttendance(res.data.att)
     }
   })
   .catch((error) => {
     console.log(error);
   })
-  console.log('your attendance records'+att)
     
 }
 
@@ -47,19 +46,21 @@ const handleHome=(e)=>{
         return (
             <div >
                 <h1>
-         view staff memebers with missing Days 
+         View Staff Memebers with Missing Days
             </h1>
 
             <div className='form-loc'>
 
             <form className="submit" onSubmit={onSubmit}>
        
+            <input className ='btn btn-primary btn-block btn-large' type="submit" />
+            </form>
 
-        <table className='table-hover'>
+            <table className='table-hover'>
                         <thead>
                             <tr>
-                                <th>Staff id </th>
-                              
+                                <th>Staff id</th>
+                                
                                 
                             </tr>
                         </thead>
@@ -69,7 +70,7 @@ const handleHome=(e)=>{
                                     <tr key={index}>
                                         
                                         <td>{item}</td>
-                                      
+                                       
                                         
                                     </tr>
                                 );
@@ -77,8 +78,11 @@ const handleHome=(e)=>{
                         </tbody>
                     </table>
 
-        <input className ='btn btn-primary btn-block btn-large' type="submit" />
-            </form>
+
+
+
+
+       
         <label>{resMessage}</label>
         </div>
 <div className="gobackbutton">

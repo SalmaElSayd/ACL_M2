@@ -25,8 +25,8 @@ const onSubmit = (e)=>{
   axios.post('http://localhost:3001/hr/viewStaffmemberMissinghours',{},{headers:{authorisation:localStorage.getItem('jwtToken')}})
   .then(res => {
     console.log(res.data)
-    if (res.data.att > 0) {
-        setAttendance([res.data.att])
+    if (res.data.att) {
+        setAttendance(res.data.att)
         
     }
   })
@@ -47,20 +47,23 @@ const handleHome=(e)=>{
 
 
         return (
-            <div className="enable-scroll" >
+            <div >
                 <h1>
-         view staff memebers with missing hours 
+                View Staff Memebers with Missing Hours
             </h1>
-            <div className='form-loc'>
 
+            <div className='form-loc'>
 
             <form className="submit" onSubmit={onSubmit}>
        
-        
-        <table className='table-hover'>
+            <input className ='btn btn-primary btn-block btn-large' type="submit" />
+            </form>
+
+            <table className='table-hover'>
                         <thead>
                             <tr>
-                                <th>Staff id </th>
+                                <th>Staff id</th>
+                                
                                 
                             </tr>
                         </thead>
@@ -70,17 +73,19 @@ const handleHome=(e)=>{
                                     <tr key={index}>
                                         
                                         <td>{item}</td>
-                                      
+                                       
                                         
                                     </tr>
                                 );
                             })}
                         </tbody>
                     </table>
-                    <input className ='btn btn-primary btn-block btn-large' type="submit" />
-            </form>
 
 
+
+
+
+       
         <label>{resMessage}</label>
         </div>
 <div className="gobackbutton">

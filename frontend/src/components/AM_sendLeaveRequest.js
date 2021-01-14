@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import '../style/ViewStaff.css';
 import Datepic from './DatePicker';  
-
+import SlotPicker from './SlotPicker';
 export class sendLeaveRequest extends Component {
     constructor(props) {
         super(props)
@@ -16,14 +16,23 @@ export class sendLeaveRequest extends Component {
         this.onChangeReason = this.onChangeReason.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
+        this.onChangeSlotCourseID = this.onChangeSlotCourseID.bind(this)
+        this.onChangeSlotDay = this.onChangeSlotDay.bind(this)
+        this.onChangeSlotType = this.onChangeSlotType.bind(this)
+        this.onChangeSlotID = this.onChangeSlotID.bind(this)
+
         this.state = {
           request_type:'',
           reason: '',
           req_slot:{},
           replacement_id: '',
-          request_date:Date.now(),
-          compensation_date:Date.now(),
-          document: ''
+          request_date:new Date(),
+          compensation_date:new Date(),
+          document: '',
+          slotcourseID:'',
+          slotday:new Date(),
+          slottype:'',
+          slotid:''
         }
     }
 
@@ -35,9 +44,17 @@ export class sendLeaveRequest extends Component {
         })
     }
 
-    onChangeReq_slot(e) {
+    onChangeReq_slot(courseID,
+      day,
+      type,
+      id) {
       this.setState({
-        req_slot: e.target.value
+        req_slot: {
+          course_id: this.state.slotcourseID,
+      date:this.state.slotday,
+      type:this.state.slottype,
+      id:this.state.slotid
+        }
       })
   }
   onChangeReplacement_id(e) {
@@ -65,19 +82,50 @@ onChangeCompensation_date(e) {
         })
     }
 
+
+
+    
+    onChangeSlotCourseID(e){
+      this.setState({
+          slotcourseID:e.target.value
+      })
+  }
+
+  onChangeSlotDay(e){
+      this.setState({
+          slotday:e.target.value
+      })
+  }
+
+  onChangeSlotType(e){
+      this.setState({
+          slottype:e.target.value
+      })
+  }
+
+  onChangeSlotID(e){
+      this.setState({
+          slotid:e.target.value
+      })
+  }
     onSubmit(e) {
         e.preventDefault();
 
         const request = {
       request_type:this.state.request_type,
       reason: this.state.reason,
-      req_slot:this.state.req_slot,
+      req_slot:{
+        course_id: this.state.slotcourseID,
+        date:this.state.slotday,
+        type:this.state.slottype,
+        id:this.state.slotid
+      },
       replacement_id: this.state.replacement_id,
       request_date: this.state.request_date,
       compensation_date:this.state.compensation_date,
       document: this.state.document
         }
-
+console.log(request)
         axios.post('http://localhost:3001/academicMember/sendLeaveRequest',
          request,{headers:{authorisation:localStorage.getItem('jwtToken')}})
             .then(response => {
@@ -90,15 +138,15 @@ onChangeCompensation_date(e) {
                 console.log(error);
             })
 
-        this.setState({
-      request_type:'',
-      reason: '',
-      req_slot:{},
-      replacement_id: '',
-      request_date:Date.now(),
-      compensation_date:Date.now(),
-      document: ''
-        })
+      //   this.setState({
+      // request_type:'',
+      // reason: '',
+      // req_slot:{},
+      // replacement_id: '',
+      // request_date:new Date(),
+      // compensation_date:new Date(),
+      // document: ''
+      //   })
     }
     render() {
         return (
@@ -121,28 +169,55 @@ onChangeCompensation_date(e) {
                                 </select>
                         <br />
                         <label>Request Slot</label>
-                        <input type="text" className="form-control" onChange={this.onChangeReq_slot}  placeholder="Enter a request slot" />
+                        {/* <input type="text" className="form-control" onChange={this.onChangeReq_slot}  placeholder="Enter a request slot" /> */}
+                        {/* <SlotPicker slotSubmit={this.onChangeReq_slot} /> */}
                         <small className="form-text text-muted">Please enter the slot you will leave.</small>
+                        <label>Slot ID</label>
+                        <select className="form-control" onChange={this.onChangeSlotID}>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                        <small className="form-text text-muted">e.g. 1,2,3 ..</small>
+                        <br />
+                        <label>Course ID</label>
+                        <input type="text"  className="form-control" onChange={this.onChangeSlotCourseID}  placeholder="Enter course ID" />
+                        <small className="form-text text-muted">e.g. CSEN702</small>
+                        <br />
+                        <label>Slot Date</label>
+                        <small className="form-text text-muted">Please choose the slot date.</small>
+                        <Datepic required onChange={(newDate) => this.setState({compensation_date:new Date(newDate).format("yyyy-MM-dd")})} /> 
+                        <br />
+                        <label>Type</label>
+                        <select className="form-control" onChange={this.onChangeSlotType}>
+                                    <option>lecture</option>
+                                    <option>tut</option>
+                                    <option>lab</option>
+                                   
+                                </select>
+                        <small className="form-text text-muted">e.g. tut/lecture/lab..</small>
                         <br />
                         <label>Replacement ID</label>
-                        <input type="text" required className="form-control" onChange={this.onChangeReplacement_id}  placeholder="Enter replacement ID" />
+                        <input type="text"  className="form-control" onChange={this.onChangeReplacement_id}  placeholder="Enter replacement ID" />
                         <small className="form-text text-muted">e.g. ac-1</small>
                         <br />
                         <label>Request Date</label>
                         <small className="form-text text-muted">Please choose the date you want to leave.</small>
-                        <Datepic></Datepic> 
+                        <Datepic onChange={(newDate) => this.setState({request_date:new Date(newDate).format("yyyy-MM-dd")})} /> 
                         <br />
                         <label>Compensation Date</label>
                         <small className="form-text text-muted">Please choose the date you will compensate in.</small>
-                        <Datepic></Datepic> 
+                        <Datepic onChange={(newDate) => this.setState({compensation_date:new Date(newDate).format("yyyy-MM-dd")})} /> 
                         <br />
                         <label>Document</label>
-                        <input type="text" required className="form-control" onChange={this.onChangeDocument}  placeholder="Enter document link" />
+                        <input  type="text"  className="form-control" onChange={this.onChangeDocument}  placeholder="Enter document link" />
                         <small className="form-text text-muted">Please enter a link with the documents needed inside of it.</small>
 
                         <br />
                         <label>Reason</label>
-                        <input type="text" required className="form-control" onChange={this.onChangeReason}  placeholder="Enter a reason" />
+                        <input type="text"  className="form-control" onChange={this.onChangeReason}  placeholder="Enter a reason" />
                         <small className="form-text text-muted">Please enter a reason why you are requesting this Leave.</small>
                         <br />
                       </div>

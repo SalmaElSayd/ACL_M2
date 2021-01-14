@@ -105,6 +105,7 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
     if (role1.toLowerCase()=='instructor'){
   
       return (
+
         <div className="enable-scroll">
          
             
@@ -142,6 +143,8 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
         if (role1.toLowerCase()=='ta' && role2.toLowerCase()=='coordinator'){
   
           return (
+
+
             <div className="enable-scroll">
              
                 
@@ -191,6 +194,7 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
           if (role1.toLowerCase()=='ta' ){
   
             return (
+  
               <div className="enable-scroll">
                
                   
@@ -228,6 +232,7 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
               if (role1.toLowerCase()=='hr' ){
   
                 return (
+
                   <div className="enable-scroll">
                    
                       

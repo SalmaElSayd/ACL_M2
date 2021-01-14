@@ -1419,8 +1419,9 @@ console.log(att)
 
  }
 if(show.length>0){
-    return res.send({att:show})
-}else{
+    let show2 = [...new Set(show)];
+
+    return res.send({att:show2})}else{
     return res.send({mess:"no staff members with missing hours"})
 }
 
@@ -1458,7 +1459,10 @@ console.log(att)
 
  }
 if(show.length>0){
-    return res.send({att:show})
+
+let show2 = [...new Set(show)];
+
+    return res.send({att:show2})
 }else{
     return res.send({mess:"no staff members with missing days"})
 }
