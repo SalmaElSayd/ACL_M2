@@ -75,7 +75,6 @@ const handleHome=(e)=>{
          </div>
             </div>
 
-
         );
     
 }

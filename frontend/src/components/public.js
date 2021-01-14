@@ -108,6 +108,7 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
             <Route path='/updateProfile' exact component={UpdateProfile}></Route>
             <Route path='/viewStaff' exact component={ViewStaff}></Route>
 
+
             <Route path='/assignCoordinator' exact component={AssignCoordinator}></Route>
             <Route path='/viewCoverageInstructor' exact component={ViewCourseCoverageInstructor}></Route>
             <Route path='/viewSlots' exact component={ViewSlots}></Route>

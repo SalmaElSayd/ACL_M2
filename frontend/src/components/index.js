@@ -92,4 +92,5 @@ export {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance, Re
     viewattendanceRecHR,
     addmissingSignInHr,addmissingSignOutHr,
     updateSalaryHr,viewStaffmemberMissinghoursHr,viewStaffmemberMissingdaysHr,
+    updateSalaryHr,viewStaffmemberMissinghoursHr,viewStaffmemberMissingdaysHr
 }
