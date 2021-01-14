@@ -77,7 +77,11 @@ const request = new mongoose.Schema({
     new_day_off:{
         type:String
     },
-    req_slot:slot
+    req_slot:slot,
+    modified:{
+        type:Boolean,
+        default: false
+    }
 });
 
 module.exports=mongoose.model('request', request);

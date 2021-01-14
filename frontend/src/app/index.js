@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 
 function App() {
+ 
   return (
     <div className="App">
       <div className="jss100">
@@ -19,7 +20,7 @@ function App() {
         <Router>
           
       <Switch>
-        <Route exact path="/login" component = {Login} />
+        <Route  exact path="/" component = {Login} />
         <Route  path="/" component = {Public} />
         
       </Switch>

@@ -1,7 +1,11 @@
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
-import '../style/loginstyle.css'
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
+
 
 
 function DeleteStaffHr(){
@@ -21,7 +25,6 @@ function DeleteStaffHr(){
     .then(res => {
      
         setResMessage(res.data.mess)
-        window.location='/hr'
 
       
       })
@@ -31,24 +34,33 @@ function DeleteStaffHr(){
     const id = e.target.value ;
         setid(id);
 }
+const handleHome=(e)=>{
+    window.location='/home'
+}
+
+
 
         return (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 30 }}>
-              <div>
+               <div className='form-loc'>
                 <h1>
           Delete a staff memeber
 <br/>
             </h1>
-            </div>
+          
             <br/>   
             
             <form onSubmit={onSubmit}>
-        <input placeholder="id" type="text" onChange={handleIdChange} />
+        <input  className="form-control"   placeholder="staff id" type="text" onChange={handleIdChange} />
 
             <br/>
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
-        <label>{resMessage}</label>
+        <label className="labelhr" >{resMessage}</label>
+        </div>
+        <div className="gobackbutton">
+             <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
+               </div>
             </div>
         );
     

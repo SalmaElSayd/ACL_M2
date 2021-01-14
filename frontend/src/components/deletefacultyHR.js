@@ -1,7 +1,11 @@
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
-import '../style/loginstyle.css'
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
+
 
 
 function DeletefacultyHR(){
@@ -22,7 +26,6 @@ function DeletefacultyHR(){
     .then(res => {
      
         setResMessage(res.data.mess)
-        window.location='/hr'
 
       })
       
@@ -31,6 +34,11 @@ function DeletefacultyHR(){
     const name = e.target.value ;
     setfaculty_name(name);
 }
+
+const handleHome=(e)=>{
+    window.location='/home'
+}
+
 
 
 
@@ -42,15 +50,19 @@ function DeletefacultyHR(){
            <br/>
             </h1>
             </div>
-            <div>
+            <div className='form-loc'>
+
             <form onSubmit={onSubmit}>
-        <input placeholder="faculty name" type="text" onChange={handlefnameChange} />
+        <input className="form-control" placeholder="faculty name" type="text" onChange={handlefnameChange} />
         <br />
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
         
             </form>
         <label>{resMessage}</label>
             </div>
+            <div className="gobackbutton">
+                        <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
+                        </div>
             </div>
         );
     

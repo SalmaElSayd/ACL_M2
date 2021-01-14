@@ -3,7 +3,9 @@
     flex-direction: column;
     margin: 0 auto;
     max-width: 1080px;
+   
 }
+
 
 .table-hover {
     border-collapse: collapse;
@@ -19,3 +21,4 @@ th, td {
 }
 
 thead:hover {background-color: #95dfdf;}
+

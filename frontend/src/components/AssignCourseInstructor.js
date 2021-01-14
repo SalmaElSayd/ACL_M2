@@ -37,7 +37,7 @@ export class AssignCourseInstructor extends Component {
             course_id: this.state.course_id
         }
 
-        axios.post('http://localhost:3001/assignCourseInstructor', request)
+        axios.post('http://localhost:3001/assignCourseInstructor', request, {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 if (response.data.message) {
                     this.setState({

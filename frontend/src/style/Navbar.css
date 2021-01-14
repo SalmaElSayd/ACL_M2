@@ -4,6 +4,8 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    position: relative;
+    z-index: 9;
 }
 
 .list-group::-webkit-scrollbar {
@@ -26,6 +28,8 @@
     top: 0;
     left: -100%;
     transition: 850ms;
+    z-index: 9;
+
 }
 
 .nav-menu.active {

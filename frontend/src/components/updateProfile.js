@@ -1,58 +1,49 @@
-import axios from 'axios'
-import React, {useState} from 'react';
-import setAuthToken from '../api'
-import { Link } from 'react-router-dom'
+import React , {useState, useEffect} from 'react'
+import axios from 'axios';
+import '../style/ViewStaff.css';
 
-function Login() {
-    const [email, setEmail]=useState('');
-    const [password, setPassword]=useState('');
-  const onSubmit = (e)=>{
-      e.preventDefault();
-    console.log("logging in")
-    const info = {
-        email:email,
-        password:password
-    }
-    axios.post('http://localhost:3001/login', info)
-    .then(res => {
-      localStorage.setItem("jwtToken", res.data);
-      console.log("resdata "+res.data);
-      })
-      
-
-
-
+function UpdateProfile() {
+  
+  const [userInfo, setUserInfo]=useState();
+  
+  useEffect(() => {
+      axios.get('http://localhost:3001/myProfile',{headers:{authorisation:localStorage.getItem('jwtToken')}})
+      .then(res => {setUserInfo([res.data.profile.information]);
+      console.log('profile info '+res.data.profile.information)})
+     
+  }, []);
+  
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+    console.log("updating profile")
+    axios.post('http://localhost:3001/updateProfile',{info:userInfo}, {headers:{authorisation:localStorage.getItem('jwtToken')}})
+    .then(res => console.log(res.data))
   }
-  const handleEmailChange = (e)=>{
-    const useremail = e.target.value ;
-        setEmail(useremail);
-}
-const handlePasswordChange = (e)=>{
-    const userpass = e.target.value ;
-    setPassword(userpass);
-}
 
+  const handleChange = (e) =>{
+    setUserInfo(e.target.value);
+    console.log(userInfo)
+  }
   return (
     
-      <div className="jss102">
-        <h3>
-            Log in
-            </h3>
+    <div className='form-loc'>
+    <h3>Update Profile Information</h3>
+    <form onSubmit={handleSubmit} >
+        <div className="form-group">
+            <label>Information</label>
+            <textarea rows="5" type="text" required className="form-control" onChange={handleChange} defaultValue={userInfo} />
+            <br />
             
-        
-<div className="container">
-    <div>
-            <form onSubmit={onSubmit}>
-        <input placeholder="email" type="email" onChange={handleEmailChange} />
-        <input placeholder="password" type="password"onChange={handlePasswordChange} />
-        <input type="submit" />
-            </form>
         </div>
+        <input type="submit" className="btn btn-primary" />
+    </form>
+    <div>
+        <br />
+      
     </div>
-
-    </div>
+</div>
     
   );
 }
 
-export default Login;
+export default UpdateProfile;

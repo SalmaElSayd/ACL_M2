@@ -2,7 +2,8 @@ import axios from 'axios'
 import React, {useState} from 'react';
 import '../style/idk.css'
 import '../style/buttons.css'
-
+import '../style/ViewStaff.css';
+import '../style/myprofile.css'
 import Button from 'react-bootstrap/Button'
 
 
@@ -21,44 +22,45 @@ const onSubmit = (e)=>{
   const info = {
      
   }
-  axios.post('http://localhost:3001/viewStaffmemberMissinghours',{},{headers:{authorisation:localStorage.getItem('jwtToken')}})
-  .then(att => {
-    if (att > 0) {
-        setAttendance({att
+  axios.post('http://localhost:3001/hr/viewStaffmemberMissinghours',{},{headers:{authorisation:localStorage.getItem('jwtToken')}})
+  .then(res => {
+    console.log(res.data)
+    if (res.data.att > 0) {
+        setAttendance([res.data.att])
         
-      })
     }
   })
   .catch((error) => {
     console.log(error);
   })
-  console.log('your attendance records'+att['attendance'])
+  console.log('your attendance records'+att)
     
 }
 
 
 
 const handleHome=(e)=>{
-    window.location='/hr'
+    window.location='/home'
 }
 
 
 
 
         return (
-            <div >
+            <div className="enable-scroll" >
                 <h1>
          view staff memebers with missing hours 
             </h1>
+            <div className='form-loc'>
+
 
             <form className="submit" onSubmit={onSubmit}>
        
-
+        
         <table className='table-hover'>
                         <thead>
                             <tr>
                                 <th>Staff id </th>
-                              
                                 
                             </tr>
                         </thead>
@@ -67,7 +69,7 @@ const handleHome=(e)=>{
                                 return (
                                     <tr key={index}>
                                         
-                                        <td>{item['day']}</td>
+                                        <td>{item}</td>
                                       
                                         
                                     </tr>
@@ -75,10 +77,12 @@ const handleHome=(e)=>{
                             })}
                         </tbody>
                     </table>
-
-        <input className ='btn btn-primary btn-block btn-large' type="submit" />
+                    <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
+
+
         <label>{resMessage}</label>
+        </div>
 <div className="gobackbutton">
          <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
          </div>

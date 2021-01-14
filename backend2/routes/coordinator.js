@@ -13,13 +13,13 @@ require('dotenv').config()
 const isString = (input) => {return (typeof input === 'string' || input instanceof String)};
 
 async function auth(req, res){
-
+    console.log('authenticating')
+    // console.log(req)
     let is_blacklisted =true;
-    let token_entry = await token_blacklist.findOne({token:req.header('auth-token')})
+    let token_entry = await token_blacklist.findOne({token:req.headers.authorisation})
     console.log(token_entry);
     if (!token_entry){
-    
-    const result = jwt.decode(req.header('auth-token'), process.env.TOKEN_SECRET);
+    const result = jwt.decode(req.headers.authorisation, process.env.TOKEN_SECRET);
     // console.log(result);
     if(!result){
         return false;
@@ -40,14 +40,14 @@ router.route('/coordinator/viewSlotLinkingRequests').get(async(req,res)=>{
     }
 
     if (!token) {
-        return res.send("Please login first");
+        return res.send({message: "Please login first"});
     }
 
     try{
         const coordinator = await staff_model.findOne({id: token.id.toLowerCase().trim()});
 
         if (coordinator.role2.toLowerCase().trim() !== "coordinator") {
-            return res.send("You are not authorized to perform this action");
+            return res.send({message: "You are not authorized to perform this action"});
         }
 
         const faculty = await faculty_model.findOne({name: coordinator.faculty});
@@ -64,7 +64,7 @@ router.route('/coordinator/viewSlotLinkingRequests').get(async(req,res)=>{
         })
 
         if (my_courses.length === 0) {
-            return res.send("We could not find a course with your id set as the coordinator id");
+            return res.send({message: "We could not find a course with your id set as the coordinator id"});
         }
 
         const requests = await request_model.find({request_type: "slot linking", course_id: {$in: my_courses}});
@@ -85,22 +85,22 @@ router.route('/coordinator/acceptSlotLinkingRequests').post(async(req, res)=>{
     }
 
     if (!token) {
-        return res.send("Please login first");
+        return res.send({message: "Please login first"});
     }
 
     if (!request_id) {
-        return res.send("Please enter the request id. You can see all request ids by viewing the slot linking requests related to your course.");
+        return res.send({message: "Please enter the request id. You can see all request ids by viewing the slot linking requests related to your course."});
     }
 
     if (!isString(request_id)) {
-        return res.send("The request id must be in the format of a string.");
+        return res.send({message: "The request id must be in the format of a string."});
     }
 
     try{
         const coordinator = await staff_model.findOne({id: token.id.toLowerCase().trim()});
 
         if (coordinator.role2.toLowerCase().trim() !== "coordinator") {
-            return res.send("You are not authorized to perform this action");
+            return res.send({message: "You are not authorized to perform this action"});
         }
 
         const faculty = await faculty_model.findOne({name: coordinator.faculty});
@@ -119,13 +119,12 @@ router.route('/coordinator/acceptSlotLinkingRequests').post(async(req, res)=>{
         const request = await request_model.findOne({_id: request_id.trim()});
 
         if (my_courses.indexOf(request.course_id) === -1) {
-            return res.send(`Request ${request_id} is for a course that is not coordinated by you.`);
+            return res.send({message: `Request ${request_id} is for a course that is not coordinated by you.`});
         }
 
         const sender = await staff_model.findOne({id: request.sending_staff.toLowerCase().trim()});
 
         const target_day = request.req_slot.date.getDay();
-        
         switch(target_day) {
             case 0: sender.schedule.sunday.push(request.req_slot); break;
             case 1: sender.schedule.monday.push(request.req_slot); break;
@@ -136,13 +135,13 @@ router.route('/coordinator/acceptSlotLinkingRequests').post(async(req, res)=>{
             default: 
                 request.status = "cancelled";
                 await request.save();
-                return res.send("The target day seems to be a Friday, which is a day off. This request has been automatically cancelled.");
+                return res.send({message: "The target day seems to be a Friday, which is a day off. This request has been automatically cancelled."});
         }
-        
         request.status = "accepted";
+        request.modified = true;
         await sender.save();
         await request.save();
-        return res.send(`Request ${request_id} has been successfully accepted.`);
+        return res.send({message: `Request ${request_id} has been successfully accepted.`});
 
     } catch(error) {
         console.log(error);
@@ -159,22 +158,22 @@ router.route('/coordinator/rejectSlotLinkingRequest').post(async(req, res)=>{
     }
 
     if (!token) {
-        return res.send("Please login first");
+        return res.send({message: "Please login first"});
     }
 
     if (!request_id) {
-        return res.send("Please enter the request id. You can see all request ids by viewing the slot linking requests related to your course.");
+        return res.send({message: "Please enter the request id. You can see all request ids by viewing the slot linking requests related to your course."});
     }
 
     if (!isString(request_id)) {
-        return res.send("The request id must be in the format of a string.");
+        return res.send({message: "The request id must be in the format of a string."});
     }
 
     try{
         const coordinator = await staff_model.findOne({id: token.id.toLowerCase().trim()});
 
         if (coordinator.role2.toLowerCase().trim() !== "coordinator") {
-            return res.send("You are not authorized to perform this action");
+            return res.send({message: "You are not authorized to perform this action"});
         }
 
         const faculty = await faculty_model.findOne({name: coordinator.faculty});
@@ -193,15 +192,16 @@ router.route('/coordinator/rejectSlotLinkingRequest').post(async(req, res)=>{
         const request = await request_model.findOne({_id: request_id.trim()});
 
         if(!request){
-            return res.send("could not find request")
+            return res.send({message: `Request ${request_id} could not be found.`});
         }
         if (my_courses.indexOf(request.course_id) === -1) {
-            return res.send(`Request ${request_id} is for a course that is not coordinated by you.`);
+            return res.send({message: `Request ${request_id} is for a course that is not coordinated by you.`});
         }
 
         request.status = "rejected";
+        request.modified = true;
         await request.save();
-        return res.send(`Request ${request_id} has been rejected`);
+        return res.send({message: `Request ${request_id} has been rejected`});
 
     } catch(error) {
         console.log(error);
@@ -224,9 +224,12 @@ router.route('/coordinator/addSlots').post(async(req,res)=>{
         return res.send("This member isn't a coordinator")
     }
     fac.departments.forEach((dep) => {
+        console.log("gayss" + dep)
         dep.courses.forEach((c)=>{
             if(c.id.toLowerCase().trim() == req.body.courseID.toLowerCase().trim()){
+                console.log(c.id)
                 course = c
+                console.log("gayss" + course)
             }
         })
     })
@@ -242,6 +245,7 @@ router.route('/coordinator/addSlots').post(async(req,res)=>{
             group:req.body.group,
             day:req.body.day
         }
+        console.log(slot)
     }
     
     if(!(coordinator.courses.includes(req.body.courseID))){
@@ -249,7 +253,7 @@ router.route('/coordinator/addSlots').post(async(req,res)=>{
     }else{
         course.course_schedule.push(slot)
         course.coverage++;
-        fac.save()
+        await fac.save()
         res.send("The Slot has been added correctly")
     }
 
@@ -425,7 +429,7 @@ router.route('/coordinator/deleteSlot').post(async(req,res)=>{
                 mem.save()
             }
         })
-        fac.save()
+        await fac.save()
         res.send("Removed Successfully")
     }
 

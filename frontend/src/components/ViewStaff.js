@@ -31,7 +31,7 @@ export class ViewStaff extends Component {
 
         console.log(course);
 
-        axios.post('http://localhost:3001/viewStaff', course)
+        axios.post('http://localhost:3001/viewStaff', course, {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 console.log(response.data)
                 if (response.data.length > 0) {

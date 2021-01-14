@@ -39,7 +39,7 @@ export class DeleteCourseInstructor extends Component {
 
         console.log(request);
 
-        axios.post('http://localhost:3001/deleteCourseInstructor', request)
+        axios.post('http://localhost:3001/deleteCourseInstructor', request, {headers: {authorisation: localStorage.getItem('jwtToken')}})
             .then(response => {
                 if (response.data.message) {
                     this.setState({

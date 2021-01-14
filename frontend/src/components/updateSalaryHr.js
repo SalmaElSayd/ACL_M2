@@ -3,8 +3,9 @@ import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
 import Button from 'react-bootstrap/Button'
 
-import '../style/idk.css'
+import '../style/ViewStaff.css'
 import '../style/buttons.css'
+
 
 
 function UpdatecourseHr(){
@@ -26,7 +27,6 @@ function UpdatecourseHr(){
     .then(res => {
      
         setResMessage(res.data.mess)
-        window.location='/hr'
 
       })
       
@@ -40,9 +40,8 @@ const handleIdchange = (e)=>{
     setid(id);
 }
 const handleHome=(e)=>{
-    window.location='/hr'
+    window.location='/home'
 }
-
 
 
 
@@ -53,17 +52,20 @@ const handleHome=(e)=>{
                 <h1>
            update salary  
             </h1>
-            
+            <div className='form-loc'>
+
             <form onSubmit={onSubmit}>
-        <input placeholder="staff id" type="text" onChange={handleIdchange} />
+        <input className="form-control" placeholder="staff id" type="text" onChange={handleIdchange} />
         <br />
-        <input placeholder="add salary" type="number" onChange={handlesalary} />
+        <input className="form-control" placeholder="add salary" type="number" onChange={handlesalary} />
         <br />
 
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
-        <label>{resMessage}</label>
-        <div className="gobackbutton">
+        <label  className="labelhr" >{resMessage}</label>
+        
+            </div>
+            <div className="gobackbutton">
                <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
                 </div>
             </div>

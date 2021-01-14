@@ -1,7 +1,11 @@
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
-import '../style/loginstyle.css'
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
+
 
 
 function DeletedepartmentHr(){
@@ -23,7 +27,6 @@ function DeletedepartmentHr(){
     .then(res => {
      
         setResMessage(res.data.mess)
-        window.location='/hr'
 
       })
       
@@ -39,22 +42,33 @@ const handledep_idChange = (e)=>{
 }
 
 
+const handleHome=(e)=>{
+    window.location='/home'
+}
+
+
+
 
         return (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 30 }}>
                 <h1>
-           delete a departmentHr 
+           delete a department
             </h1>
-            
+            <div className='form-loc'>
+
             <form onSubmit={onSubmit}>
-        <input placeholder="faculty name" type="text" onChange={handlefaculty_nameChange} />
+        <input   className="form-control" placeholder="faculty name" type="text" onChange={handlefaculty_nameChange} />
         <br />
-        <input placeholder="add the dep id " type="text" onChange={handledep_idChange} />
+        <input   className="form-control"  placeholder="add the dep id " type="text" onChange={handledep_idChange} />
         <br />
 
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>
+            </div>
+            <div className="gobackbutton">
+                        <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
+                        </div>
             </div>
         );
     

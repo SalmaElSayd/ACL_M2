@@ -1,7 +1,10 @@
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
-import '../style/loginstyle.css'
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
 
 
 function Updatestaff(){
@@ -23,7 +26,6 @@ function Updatestaff(){
     .then(res => {
      
         setResMessage(res.data.mess)
-        window.location='/hr'
 
       
       })
@@ -45,26 +47,31 @@ const handleChange1 =(e)=>{
     setrole1(role1);  
 
 }
+const handleHome=(e)=>{
+  window.location='/home'
+}
+
+
+
 
 
         return (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 30 }}>
-              <div>
+               <div className='form-loc'>
                 <h1>
           Update a staff memeber
 <br/>
             </h1>
-            </div>
             <br/>
             
             <form onSubmit={onSubmit}>
-        <input placeholder="id" type="text" onChange={handleIdChange} />
+        <input  className="form-control" placeholder="id" type="text" onChange={handleIdChange} />
 
 <br/>
-<input placeholder="office location" type="text" onChange={handleLocationChange} />
+<input  className="form-control" placeholder="office location" type="text" onChange={handleLocationChange} />
 <br/>
        <div>
-       <label>Role 1</label>
+       <label className="labelhr" >Role 1</label>
        <br/>
 
       <select onChange={handleChange1} >
@@ -79,8 +86,13 @@ const handleChange1 =(e)=>{
 
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
-        <label>{resMessage}</label>
+        <label  className="labelhr">{resMessage}</label>
             </div>
+            <div className="gobackbutton">
+             <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
+               </div>
+            </div>
+
         );
     
 }

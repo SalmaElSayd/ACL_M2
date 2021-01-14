@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, {useState} from 'react';
-import '../style/idk.css'
+import '../style/ViewStaff.css'
 import '../style/buttons.css'
 
 import Button from 'react-bootstrap/Button'
@@ -21,25 +21,24 @@ const onSubmit = (e)=>{
   const info = {
      
   }
-  axios.post('http://localhost:3001/viewStaffmemberMissinghours',{},{headers:{authorisation:localStorage.getItem('jwtToken')}})
-  .then(att => {
-    if (att > 0) {
-        setAttendance({att
-        
-      })
+  axios.post('http://localhost:3001/hr/viewStaffmemberMissingdays',{},{headers:{authorisation:localStorage.getItem('jwtToken')}})
+  .then(res => {
+      console.log(res.data)
+    if (res.data.att > 0) {
+        setAttendance([res.data.att])
     }
   })
   .catch((error) => {
     console.log(error);
   })
-  console.log('your attendance records'+att['attendance'])
+  console.log('your attendance records'+att)
     
 }
 
 
 
 const handleHome=(e)=>{
-    window.location='/hr'
+    window.location='/home'
 }
 
 
@@ -50,6 +49,8 @@ const handleHome=(e)=>{
                 <h1>
          view staff memebers with missing Days 
             </h1>
+
+            <div className='form-loc'>
 
             <form className="submit" onSubmit={onSubmit}>
        
@@ -67,7 +68,7 @@ const handleHome=(e)=>{
                                 return (
                                     <tr key={index}>
                                         
-                                        <td>{item['day']}</td>
+                                        <td>{item}</td>
                                       
                                         
                                     </tr>
@@ -79,6 +80,7 @@ const handleHome=(e)=>{
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>
+        </div>
 <div className="gobackbutton">
          <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
          </div>

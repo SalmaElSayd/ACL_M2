@@ -1,7 +1,10 @@
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
-import '../style/loginstyle.css'
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
 
 
 function UpdatecourseHr(){
@@ -26,11 +29,14 @@ function UpdatecourseHr(){
     .then(res => {
      
         setResMessage(res.data.mess)
-        window.location='/hr'
 
       })
       
   }
+  const handleHome=(e)=>{
+    window.location='/home'
+}
+
   const handleFnameChange = (e)=>{
     const faculty_name = e.target.value ;
     setfaculty_name(faculty_name);
@@ -58,19 +64,25 @@ const handlecredit_hourseChange = (e)=>{
            update a course 
             </h1>
             
+            <div className='form-loc'>
+
             <form onSubmit={onSubmit}>
-        <input placeholder="faculty name" type="text" onChange={handleFnameChange} />
+        <input className="form-control" placeholder="faculty name"  placeholder="faculty name" type="text" onChange={handleFnameChange} />
         <br />
-        <input placeholder="add the dep id" type="text" onChange={handledep_idChange} />
+        <input className="form-control" placeholder="faculty name"  placeholder="add the dep id" type="text" onChange={handledep_idChange} />
         <br />
-        <input placeholder="add the course id" type="text" onChange={handlesetcourse_idChange} />
+        <input className="form-control" placeholder="faculty name"  placeholder="add the course id" type="text" onChange={handlesetcourse_idChange} />
         <br />
-        <input placeholder="add course credit hours" type="number" onChange={handlecredit_hourseChange} />
+        <input className="form-control" placeholder="faculty name"  placeholder="add course credit hours" type="number" onChange={handlecredit_hourseChange} />
         <br />
 
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
-        <label>{resMessage}</label>
+        <label  className="labelhr" >{resMessage}</label>
+            </div>
+            <div className="gobackbutton">
+             <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
+               </div>
             </div>
         );
     

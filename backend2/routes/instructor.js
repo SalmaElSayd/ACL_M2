@@ -10,13 +10,13 @@ const jwt = require('jsonwebtoken');
 const { db } = require('../models/staffSchema').staff;
 
 async function auth(req, res){
-
+    console.log('authenticating')
+    // console.log(req)
     let is_blacklisted =true;
-    let token_entry = await token_blacklist.findOne({token:req.header('auth-token')})
+    let token_entry = await token_blacklist.findOne({token:req.headers.authorisation})
     console.log(token_entry);
     if (!token_entry){
-    
-    const result = jwt.decode(req.header('auth-token'), process.env.TOKEN_SECRET);
+    const result = jwt.decode(req.headers.authorisation, process.env.TOKEN_SECRET);
     // console.log(result);
     if(!result){
         return false;
@@ -49,7 +49,7 @@ inst.route('/instructor/viewCoverage').post(async (req,res)=>{
     fac.departments.forEach((dep)=>{
         console.log(dep.name)
         dep.courses.forEach((c)=>{
-            if(c.id.toLowerCase().trim() == course.toLowerCase().trim()){
+            if(c.id.toLowerCase().trim() == course.toLowerCase().trim() ){
                 courseCoverage =  c.course_schedule.length / c.coverage;
                 console.log("schedlen "+courseCoverage);
             }
@@ -183,6 +183,9 @@ inst.route('/instructor/viewProfilesDepartment').post(async (req,res) => {
                 office_location:mem.office_location,
                 role1:mem.role1,
                 role2:mem.role2,
+                gender:mem.gender,
+                faculty:mem.faculty,
+                department:mem.department,
                 courses:mem.courses,
                 day_off:mem.day_off,
                 info:mem.info
@@ -190,7 +193,9 @@ inst.route('/instructor/viewProfilesDepartment').post(async (req,res) => {
             }
             ans.push(person)
     })
+    console.log(ans)
     res.send(ans)
+
 });
 
 inst.route('/instructor/viewProfilesCourse').post(async (req,res) => {
@@ -217,7 +222,10 @@ inst.route('/instructor/viewProfilesCourse').post(async (req,res) => {
             role1:mem.role1,
             role2:mem.role2,
             courses:mem.courses,
+            gender:mem.gender,
             day_off:mem.day_off,
+            department:mem.department,
+            faculty:mem.faculty,
             info:mem.info
         }
         ans.push(person)
@@ -443,6 +451,7 @@ inst.route('/instructor/updateCourseMem').post(async (req,res) =>{
             var s = member.courses.indexOf(courseID);
             member.courses.splice(s,1);
             member.courses.push(targetCourse);
+            courseSched.coordinator_id = " "
             courseSched.academic_member_ids.forEach((m)=>{
                 if (m == member.id){
                     courseSched.academic_member_ids.splice(courseSched.academic_member_ids.indexOf(m),1)
@@ -533,6 +542,7 @@ inst.route('/instructor/updateCourseMem').post(async (req,res) =>{
 
 inst.route('/instructor/deleteCourseMem').post(async (req,res) =>{
     const result = await auth(req,res);
+    console.log(result)
     if(!result){
         return res.send("No Insturctor exists");
     }
@@ -560,6 +570,7 @@ inst.route('/instructor/deleteCourseMem').post(async (req,res) =>{
         }else{
             var s = member.courses.indexOf(courseID);
             member.courses.splice(s,1);
+            courseSched.coordinator_id = " "
             courseSched.academic_member_ids.forEach((m)=>{
                 if (m == member.id){
                     courseSched.academic_member_ids.splice(courseSched.academic_member_ids.indexOf(m),1)
@@ -668,6 +679,7 @@ inst.route('/instructor/removeCourseMem').post(async (req,res) =>{
         }else{
             var s = member.courses.indexOf(courseID);
             member.courses.splice(s,1);
+            courseSched.coordinator_id = " "
             courseSched.academic_member_ids.forEach((m)=>{
                 if (m == member.id){
                     courseSched.academic_member_ids.splice(courseSched.academic_member_ids.indexOf(m),1)

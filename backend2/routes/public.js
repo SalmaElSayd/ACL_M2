@@ -13,13 +13,13 @@ require('dotenv').config()
 
 async function auth(req, res){
     console.log('authenticating')
-    // console.log(req)
+    console.log(req.headers)
     let is_blacklisted =true;
     let token_entry = await token_blacklist.findOne({token:req.headers.authorisation})
     console.log(token_entry);
     if (!token_entry){
     const result = jwt.decode(req.headers.authorisation, process.env.TOKEN_SECRET);
-    // console.log(result);
+    console.log(result);
     if(!result){
         return false;
     }  
@@ -113,6 +113,56 @@ async function getNextSequenceValue(sequenceName){
 //     res.send()
 // })
 
+router.route('/getRoles')
+.get(async (req, res)=>{
+
+    const result = await auth(req,res);
+
+
+    console.log(result);
+
+    if(!result){
+        return res.send({message:"Authenication failed"})
+    }
+    const profile  = await staff_model.findOne({id:result.id});
+
+    
+    if(!profile){
+        return res.send({message:"This account does not exist"})
+    }
+    else{
+        role1=profile.role1;
+        role2=profile.role2;
+
+         res.send({role1 :role1, role2:role2});
+    }
+
+});
+
+router.route('/salary')
+.get(async (req,res)=>{
+    const result = await auth(req,res);
+
+
+    console.log(result);
+
+    if(!result){
+        return res.send({message:"Authenication failed"})
+    }
+    const profile  = await staff_model.findOne({id:result.id});
+
+    
+    if(!profile){
+        return res.send({message:"This account does not exist"})
+    }
+    else{
+        salary=profile.salary;
+
+         res.send({salary:salary});
+    }
+
+});
+
 router.route('/login')
 .post(async (req, res)=>{
     console.log("log in")
@@ -141,7 +191,8 @@ router.route('/login')
             console.log("new_password  "+req.body.newPassword)
             const salt = await bcrypt.genSalt(10); //10 ->>computational cost: hashing 2^10 times over
             if (!req.body.newPassword){
-                return res.send({message: "please enter new password"})
+                return res.send({message: "please enter new password",
+            first:true})
             }
             const newPassword = await bcrypt.hash(req.body.newPassword,salt)
         
@@ -168,7 +219,7 @@ router.route('/login')
 router.route('/logout')
 .post(async(req,res)=>{
     var token_dead = new token_blacklist({
-        token:req.req.headers.authorisation
+        token:req.headers.authorisation
     });
     try{
     await token_dead.save();}
@@ -225,32 +276,29 @@ function ValidateEmail(mail)
 
 router.route('/updateProfile')
 .post(async (req, res)=>{
-
     const result =await auth(req,res);
 
     console.log(result);
 
     if(!result){
-        return res.write({message:"Authentication failed"})
+        return res.send({message:"Authentication failed"})
     }
     const profile  = await staff_model.findOne({id:result.id});
-
     console.log("info           "+req.body.info);
     if(!profile){
-        return res.write({message:"This account does not exist"})
+        return res.send({message:"This account does not exist"})
     }
     else{
         try {
             var staffDocument = await staff_model.updateOne({id: result.id},  
                 {info:req.body.info})
         } catch (error) {
-            res.write(error)
+            return res.send(error)
         }
         
     }
     var upd = await staff_model.findOne({id:result.id});
-    res.write({new_profile: upd.info});
-    res.send();
+    res.send({new_profile: upd.info});
 });
 
 router.route('/resetPassword')
@@ -264,14 +312,15 @@ router.route('/resetPassword')
     if (!req.body.password){
         return res.send({message :'Please enter new password'})
     }
-
+    console.log(req.body.password)
     const salt = await bcrypt.genSalt(10); //10 ->>computational cost: hashing 2^10 times over
     const newPassword = await bcrypt.hash(req.body.password,salt)
 
-  
+  console.log(result.id)
 try {
-    staff_model.updateOne({id:result.id},  
-        {password : newPassword}); 
+    await staff_model.updateOne({id:result.id},  
+       {$set: {password : newPassword}}); 
+        console.log(newPassword)
 
 } catch (error) {
     return res.send(error);
@@ -400,12 +449,24 @@ router.route('/viewAttendance')
         return res.send("Authentication failed")
     }
     const record  = await  attendance_model.findOne({staff_id:result.id });
-    res.send({attendance_record:record})
+    console.log("year"+req.params.month)
+    if (req.params.month && req.params.year){
+        var monthrecs =[]
+        const rec  = await  attendance_model.findOne({staff_id:result.id });
+        rec.attendance.forEach(record => {
+            if (checkMonth(req.params.month, req.params.year, record.day)){
+                monthrecs.push(record)
+            }
+        });
+        console.log(monthrecs)
+        res.send({attendance_record:monthrecs})
+    }else{
+    res.send({attendance_record:record})}
 });
 
 function checkMonth(month, year, date){
-    console.log(date.getFullYear())
-    console.log(date.getMonth())
+    console.log(date.getFullYear()+ "  "+year)
+    console.log(date.getMonth()+"   "+month)
 if(date.getMonth()+1==month & date.getFullYear()==year){
     return true;
 }
@@ -429,7 +490,8 @@ router.route('/viewAttendance/:month/:year')
             monthrecs.push(record)
         }
     });
-    res.send({attendance_records:monthrecs})
+    console.log(monthrecs)
+    res.send({attendance_record:monthrecs})
 });
 
 function checkGUCMonth(recdate, date){
@@ -438,14 +500,14 @@ function checkGUCMonth(recdate, date){
     let day = recdate.getDate()
     console.log("day"+day)
     console.log(recdate.getMonth()+"months"+date.getMonth())
-    console.log(recdate.getYear()+"months"+date.getYear())
+    console.log(recdate.getFullYear()+"months"+date.getFullYear())
     if (day>=11){
         month+=1
     }
-    if(date.getMonth()==month-1 & date.getYear()==year & day>10){
+    if(date.getMonth()==month-1 & date.getYear()>=year-1 & day>10){
         return true;
     }
-    if(date.getMonth()==month & date.getYear()==year & date<=10){
+    if(date.getMonth()==month & date.getYear()==year & day<=10){
         return true;
     }
     
@@ -465,10 +527,12 @@ router.route('/viewMissingDays')
     var missingdays =[]
     const rec  = await  attendance_model.findOne({staff_id:result.id });
     rec.attendance.forEach(record => {
+        console.log(record.status +" "+record.day)
         if (record.status.toLowerCase().trim()=="missing" && checkGUCMonth(record.day, tim )){
             missingdays.push(record)
         }
     });
+    console.log(missingdays)
     res.send({days:missingdays})
 });
 
@@ -496,9 +560,9 @@ router.route('/viewMissingHours')
     mins  = Math.trunc(hours%60)
     hours = Math.trunc(hours/60)
     if (hours<0){
-        res.send("extra hours: " + -1*hours +":"+mins);
+        res.send({h: hours , m:mins, extra:true});
     }else{
-        res.send("missing hours: " + hours +":"+mins);
+        res.send({h: hours , m:mins, extra:false});
     }
     
 });

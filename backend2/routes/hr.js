@@ -13,14 +13,16 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-async function auth(req, res){
 
+async function auth(req, res){
+    console.log('authenticating')
+   //  console.log(req)
     let is_blacklisted =true;
-    let token_entry = await token_blacklist.findOne({token:req.header('auth-token')})
+    try{
+    let token_entry = await token_blacklist.findOne({token:req.headers.authorisation})
     console.log(token_entry);
     if (!token_entry){
-    
-    const result = jwt.decode(req.header('auth-token'), process.env.TOKEN_SECRET);
+    const result = jwt.decode(req.headers.authorisation, process.env.TOKEN_SECRET);
     // console.log(result);
     if(!result){
         return false;
@@ -30,7 +32,11 @@ async function auth(req, res){
     else{
         return false;
     }
+}catch(err){
+    console.log("damn auth man ")
 }
+}
+
 
 async function getNextSequenceValue(sequenceName){
     const fields = await counters_model.countDocuments();
@@ -80,12 +86,13 @@ async function getNextSequenceValue(sequenceName){
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
     try{
+        
     if(!valid_location_type(req.body.location_type)){
-        return res.send("please enter a valid location tybe 'hall',office'lab,tutorial");
+        return res.send({mess:"please enter a valid location tybe 'hall',office'lab,tutorial"});
     }
 
     var newLoc = new location_model({
@@ -96,13 +103,13 @@ if (result.role1.toLowerCase().trim() == "hr"){
     })
     console.log(newLoc);
 await newLoc.save()
-res.send("added : "+ newLoc)
+res.send({mess:"success"} )
 
 }catch(err){
     return res.send(err);
 }}
 else{
-    return res.send("Only HR can add a location")
+    return res.send({mess:"Only HR can add a location"})
 }
 });
 router.route('/hr/updateLocation')
@@ -110,7 +117,7 @@ router.route('/hr/updateLocation')
     const result = await auth(req,res);
     console.log(result);
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
     if (result.role1.toLowerCase().trim() == "hr"){
         try{
@@ -118,12 +125,12 @@ router.route('/hr/updateLocation')
         var loc_result = await location_model.findOne({id:req.body.loc_id});
          console.log(loc_result);
           if (!loc_result){
-        return res.send("This location does not exist");
+        return res.send({mess:"This location does not exist"});
          }
 
          if (!req.body.location_type){
         if (!req.body.capacity){
-            return res.send("please enter updated location info")
+            return res.send({mess:"please enter updated location info"})
         }else{
             var update = {capacity:req.body.capacity}
         }
@@ -143,18 +150,18 @@ router.route('/hr/updateLocation')
             return res.send(err0) 
         } 
         else{ 
-            console.log("Updated Docs : ", docs); 
+           
         } 
         }); 
 
           var newLoc = await location_model.findOne({id:req.body.loc_id});
-    res.send("updated to: "+newLoc)
+    res.send({mess:"success"})
 
 }catch(err){
     return res.send(err)
 }}
 else{
-    return res.send("Only HR can update a location")
+    return res.send({mess:"Only HR can update a location"})
 }
 });
  
@@ -166,7 +173,7 @@ router.route('/hr/deleteLocation')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
     if (result.role1.toLowerCase().trim() == "hr"){
 
@@ -174,7 +181,7 @@ router.route('/hr/deleteLocation')
    
    console.log(loc_result);
    if (!loc_result){
-       return res.send("This location does not exist");
+       return res.send({mess:"This location does not exist"});
    }
 
     location_model.deleteOne({id:req.body.loc_id}, function (err, docs) { 
@@ -186,7 +193,7 @@ router.route('/hr/deleteLocation')
         } 
     }); 
 
-res.send("deleted : "+ loc_result)}
+res.send({mess: "success"})}
 else{
     return res.send("Only HR can delete a location")
 }
@@ -224,39 +231,39 @@ router.route('/hr/addStaff')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
         const salt = await bcrypt.genSalt(10); //10 ->>computational cost: hashing 2^10 times over
     const newPassword = await bcrypt.hash("123456",salt)
 
     if (!req.body.email){
-        return res.send("must add email");
+        return res.send({mess:"must add email"})
     }
     if (!ValidateEmail(req.body.email)){
-        return res.send("email must be in format: somename@abc.xyz")
+        return res.send({mess:"email must be in format: somename@abc.xyz"})
     }
     if (!req.body.salary){
-        return res.send("must add salary");
+        return res.send({mess:"must add salary"});
     }
     if (!req.body.office_location){
-        return res.send("must add office location");
+        return res.send({mess:"must add office location"});
     }
     var office = await location_model.findOne({id:req.body.office_location});
     if(!office){
-        return res.send("this office does not exist. please select another");
+        return res.send({mess:"this office does not exist. please select another"});
     }
     if(office.type!="office")
-    return res.send("this  is Location is not an office. please select an office location");
+    return res.send({mess:"this  is Location is not an office. please select an office location"});
     if (office.taken>=office.capacity){
-        return res.send("this office is full. please select another");
+        return res.send({mess:"this office is full. please select another"});
     }
    
     if (!req.body.role1){
-        return res.send("must add role1");
+        return res.send({mess:"must add role1"});
     }
     if(!ValidateRole1(req.body.role1)){
-        return res.send("must specify role: hr/instructor/ta");
+        return res.send({mess:"must specify role: hr/instructor/ta"});
     
     }
     if(req.body.gender==null){
@@ -264,7 +271,7 @@ if (result.role1.toLowerCase().trim() == "hr"){
     }
     if(!req.body.gender instanceof Boolean)
 {
-    return res.send("must add valid format for gender: true for female, false for male");
+    return res.send({mess:"must add valid format for gender: true for female, false for male"});
 }
 
 
@@ -299,12 +306,12 @@ if (result.role1.toLowerCase().trim() == "hr"){
     }else{
 
         if (!req.body.faculty){
-            return res.send("must specify faculty");
+            return res.send({mess:"must specify faculty"});
         }
         var fac = await faculty_model.findOne({name:req.body.faculty});
-        if(!fac){return res.send("A faculty with that name does not exist");}
+        if(!fac){return res.send({mess:"A faculty with that name does not exist"});}
         if (!req.body.dept_id){
-            return res.send("must specify department");
+            return res.send({mess:"must specify department"});
         }
         var depfound = false;
         fac.departments.forEach(dep => {
@@ -313,14 +320,14 @@ if (result.role1.toLowerCase().trim() == "hr"){
             }
         });
         if (!depfound){
-            return res.send("department id not found within given faculty")
+            return res.send({mess:"department id not found within given faculty"})
         }
 
         if (!req.body.role2){
             var rolesecond = "";
         }else{
             if(!ValidateRole2(req.body.role2)){
-                return res.send("must specify role2 to be in this format : HOD, Coordinator");
+                return res.send({mess:"must specify role2 to be in this format : HOD, Coordinator"});
             }
             else
             var rolesecond =req.body.role2.toLowerCase().trim();
@@ -355,7 +362,7 @@ if (result.role1.toLowerCase().trim() == "hr"){
             newrec.save();
             console.log(newrec);
         } catch (error) {
-            return res.send(error)
+            return res.send({mess:"error"})
         }
     }
 
@@ -363,7 +370,7 @@ if (result.role1.toLowerCase().trim() == "hr"){
     try {
         await newUser.save()
     } catch (error) {
-        return res.send(error) 
+        return res.send({mess:"error"}) 
     }
     
 
@@ -391,9 +398,9 @@ console.log("hod")
     }); 
 
    
-return res.send("added : "+ newUser)}   
+return res.send({mess:"added : "})}   
 else{
-    return res.send("Only HR can add a staff member")
+    return res.send({mess:"Only HR can add a staff member"})
 }
 
 });
@@ -407,7 +414,7 @@ router.route('/hr/updatestaff')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 
 if (result.role1.toLowerCase().trim() == "hr"){
@@ -416,15 +423,15 @@ if (result.role1.toLowerCase().trim() == "hr"){
     var staff_member = await staff_model.findOne({id:req.body.id});
     console.log(staff_member);
     if (!staff_member){
-        return res.send("This staff_memeber does not exist");
+        return res.send({mess:"This staff_memeber does not exist"});
     }
 
     if (!req.body.office_location){
         if (!req.body.role1){
-            return res.send("please enter updated  role")
+            return res.send({mess:"please enter updated  role"})
         }else{
             if(!ValidateRole1(req.body.role1)){
-                return res.send("must specify role: hr/instructor/ta");
+                return res.send({mess:"must specify role: hr/instructor/ta"});
             }else
             var update = {role1:req.body.role1.toLowerCase().trim()}
         }
@@ -432,20 +439,20 @@ if (result.role1.toLowerCase().trim() == "hr"){
         if(!req.body.role1){
             var office = await location_model.findOne({id:req.body.office_location});
             if(!office)
-            return  res.send("this office does not exist");
+            return  res.send({mess:"this office does not exist"});
             else{
                 var update = {office_location:req.body.office_location}
             }
         }{
             if(ValidateRole1(req.body.role1)){
                 if(staff_member.role1==(req.body.role1.toLowerCase().trim())){
-                    return  res.send("this memeber already has this role");
+                    return  res.send({mess:"this memeber already has this role"});
                 }
                 else{
                     var office = await location_model.findOne({id:req.body.office_location});
                     if(!office){
                         var update = {role1:req.body.role1.toLowerCase().trim()}
-                        return  res.send("this office does not exist");
+                        return  res.send({mess:"this office does not exist"});
                     }else{
                         var update = {role1:req.body.role1.toLowerCase().trim(),office_location:req.body.office_location};
                     }
@@ -453,11 +460,11 @@ if (result.role1.toLowerCase().trim() == "hr"){
             }else{
                 if(!office){
                    
-                    return  res.send("this office does not exist");
+                    return  res.send({mess:"this office does not exist"});
                 }else{
                     var update = {office_location:req.body.office_location};
                 }
-                return  res.send("this role1 is not valid");
+                return  res.send({mess:"this role1 is not valid"});
             }
         }
     }
@@ -465,10 +472,10 @@ if (result.role1.toLowerCase().trim() == "hr"){
     staff_model.updateOne({id:req.body.id},  
         update, function (err, docs) { 
         if (err){ 
-            return res.send(err) 
+            return res.send({mess:"err"}) 
         } 
         else{ 
-            console.log("Updated Docs : ", docs); 
+            console.log({mess:"Updated Docs "}); 
         }
         
      
@@ -489,7 +496,7 @@ router.route('/hr/deletestaff')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mes:"Authenication failed"})
     }
     if (result.role1.toLowerCase().trim() == "hr"){
 
@@ -497,28 +504,29 @@ router.route('/hr/deletestaff')
    
    console.log(staff_memeber);
    if (!staff_memeber){
-       return res.send("This staff_memeber does not exist");
+       return res.send({mess:"This staff_memeber does not exist"});
    }
-   if(!role2.toLowerCase().trim()=='coordinator'){
+ try{
+   if(!(staff_memeber.role2.toLowerCase().trim() =="coordinator")){
   
 try{ // delete staff record 
    attendance_model.deleteOne({staff_id:req.body.id}, function (err, docs) { 
     if (err){ 
-        return res.send(err) 
+        return res.send({mess:"err"}) 
     } 
     else{ 
         console.log("Updated Docs : ", docs); 
     } 
 }); }
  catch(error) {
-    return res.send(error);
+    return res.send({mess:"error"});
 }
 try{
 
 
 //////NOT SURE YET
 
-   if(role2=='HOD'){
+   if(staff_memeber.role2.toLowerCase().trim()=='HOD'){
     // assign a new HOD
 
 const newHOD_id=0;
@@ -542,10 +550,9 @@ var department_update_hod=faculty.department.forEach(dep=>{
 
    }
 }catch(error) {
-    return res.send(error);
+    return res.send({mess:"error HOD"});
 }
-
-
+try{
 var faculty=faculty_model.findOne({name:staff_member.faculty});
 var department=faculty.findOne({id:staff_member.department})
 var courses=department.courses;
@@ -583,8 +590,11 @@ if(staff_member.role1=='Instructor'){
         await courses.save();
         
      }
+    }catch(err){
+        return res.send({mess:"error 590"});
+
+    }
         
-    
 
 staff_member.schedule.saturday.forEach(slot=>{
        courses.forEach(course=>{
@@ -669,7 +679,7 @@ staff_member.schedule.thursday.forEach(slot=>{
 
  staff_model.deleteOne({id:req.body.id}, function (err, docs) { 
     if (err){ 
-        return res.send(err) 
+        return res.send({mess:"err out"}) 
     } 
     else{ 
         console.log("Updated Docs : ", docs); 
@@ -680,10 +690,14 @@ staff_model.save();
 
 res.send("deleted : "+ staff_memeber)
    }else{
-    return res.send("you can not delete Coordinator, assign a diffrenent  Coordinator first  ")
-   }}
+    return res.send({mess:"you can not delete Coordinator, assign a diffrenent  Coordinator first  "})
+   }}catch(err){
+    return res.send({mess:"error"});
+
+   }
+}
 else{
-    return res.send("Only HR can delete a staff memeber")
+    return res.send({mess:"Only HR can delete a staff memeber"})
 }
 });
 
@@ -694,29 +708,29 @@ router.route('/hr/addFaculty')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
 try{
     if(!req.body.name){
-        return res.send("you need to enter a faculty name  ")
+        return res.send({mess:"you need to enter a faculty name  "})
     }
     if(await (faculty_model.findOne({name:req.body.name}))){
-        return res.send("this faculty already exsits ")
+        return res.send({mess:"this faculty already exsits "})
     }
     if(!req.body.dep_id){
-        return res.send("you need to add a department id  ")
+        return res.send({mess:"you need to add a department id  "})
 
     }
     if(!req.body.dep_name){
-        return res.send("you need to add a department name  ")
+        return res.send({mess:"you need to add a department name  "})
     }
     if(!req.body.dep_id){
-        return res.send("you need to add a department id  ")
+        return res.send({mess:"you need to add a department id  "})
 
     }
     if(!req.body.course_id){
-        return res.send("you need to add a course id  ")
+        return res.send({mess:"you need to add a course id  "})
     }
 
     var faculty=new faculty_model({
@@ -727,13 +741,13 @@ try{
  faculty.departments.push(dep);
     console.log(faculty);
 await faculty.save()
-res.send("added : "+ faculty)
+res.send({mess:"added "})
 }catch(err){
-    return res.send(err)
+    return res.send({mess:"err"})
 }
 }
 else{
-    return res.send("Only HR can add a faculty")
+    return res.send({mess:"Only HR can add a faculty"})
 }
 });
 
@@ -745,19 +759,19 @@ else{
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
     if(!req.body.faculty_name)
-         return res.send("Enter faculty name");
+         return res.send({mess:"Enter faculty name"});
     var faculty = await faculty_model.findOne({name:req.body.faculty_name});
     console.log(faculty);
     if (!faculty){
-        return res.send("This faculty does not exist");
+        return res.send({mess:"This faculty does not exist"});
     }else{
 
     if (!req.body.faculty_name_update){
-            return res.send("please enter updated faculty  info")
+            return res.send({mess:"please enter updated faculty  info"})
         }else{
             var update = {name:req.body.faculty_name_update}
         }
@@ -775,9 +789,9 @@ if (result.role1.toLowerCase().trim() == "hr"){
     }); 
 
     var newFac = await faculty_model.findOne({name:req.body.faculty_name_update});
-res.send("updated to: "+newFac)}
+res.send({mess:"updated "})}
 else{
-    return res.send("Only HR can update a faculty ")
+    return res.send({mess:"Only HR can update a faculty "})
 }
 });
 
@@ -789,31 +803,31 @@ router.route('/hr/deleteFaculty')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
     if(!req.body.faculty_name){
-        return res.send("please enter faculty name ")
+        return res.send({mess:"please enter faculty name "})
     }
    var faculty = await faculty_model.findOne({name:req.body.faculty_name});
    
    console.log(faculty);
    if (!faculty){
-       return res.send("This faculty does not exist");
+       return res.send({mess:"This faculty does not exist"});
    }
 
   await faculty_model.deleteOne({name:req.body.faculty_name}, function (err, docs) { 
         if (err){ 
-            return res.send(err) 
+            return res.send({mess:"err"}) 
         } 
         else{ 
             console.log("Updated Docs : ", docs); 
         } 
     }); 
 
-res.send("deleted : "+ faculty)}
+res.send({mess:"deleted "})}
 else{
-    return res.send("Only HR can delete a faculty")
+    return res.send({mess:"Only HR can delete a faculty"})
 }
 });
  
@@ -824,22 +838,22 @@ router.route('/hr/adddepartment')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
     if(!req.body.faculty_name){
-        return res.send("please enter the  faculty name ")
+        return res.send({mess:"please enter the  faculty name "})
     }
     var faculty= await faculty_model.findOne({name:req.body.faculty_name})
     if(!faculty){
-        return res.send("This faculty does not exist");   
+        return res.send({mess:"This faculty does not exist"});   
     }else{
         if(!req.body.id)
-        return res.send("please enter the  department id ")
+        return res.send({mess:"please enter the  department id "})
         if(!req.body.name)
-        return res.send("please enter the  department name ")
+        return res.send({mess:"please enter the  department name "})
         if(!req.body.course_id)
-        return res.send("please enter  one  course id in this department")
+        return res.send({mess:"please enter  one  course id in this department"})
 
         var department=({
             id:req.body.id,
@@ -856,9 +870,9 @@ var department = faculty.departments.find(dep=>{
     return dep;
 
 })
-res.send("added : "+ department)}
+res.send({mess:"added : "})}
 else{
-    return res.send("Only HR can add a department")
+    return res.send({mess:"Only HR can add a department"})
 }
 });
 
@@ -875,15 +889,14 @@ router.route('/hr/updateDepartment')
 if (result.role1.toLowerCase().trim() == "hr"){
    
     if(!req.body.faculty_name){
-        return res.send("please enter the  faculty name ")
+        return res.send({mess:"please enter the  faculty name "})
     }
     var headexists = await staff_model.findOne({id:req.body.head_id})
     var faculty = await faculty_model.findOne({name:req.body.faculty_name});
     if (!faculty){
-        return res.send("This faculty does not exist");
+        return res.send({mess:"This faculty does not exist"});
     }else{
         depfound=false;
-       var dept; 
      faculty.departments.forEach((dep) => { 
         if (dep.id.toLowerCase().trim() == req.body.dep_id.toLowerCase().trim()){
             depfound=true;
@@ -892,37 +905,34 @@ if (result.role1.toLowerCase().trim() == "hr"){
             console.log(req.body.head_id);
             if (!req.body.name){
                 if (!req.body.head_id){
-                    return res.send("please enter updated department info")
+                    return res.send({mess:"please enter updated department info"})
                 }else{
 
                    
                     if (!headexists){
-                        return res.send("this staff member does not exist");
+                        return res.send({mess:"this staff member does not exist"});
                     }
                     if (headexists.role1.toLowerCase().trim() !== "instructor"){
-                        return res.send("this staff member is not an instructor");
+                        return res.send({mess:"this staff member is not an instructor"});
                     }
                     console.log("valid head")
                     dep.head_id=req.body.head_id
-                    dept= dep
                 }
                 }
             else{
                 if (!req.body.head_id){
                    dep.name=req.body.name;
-                   dept= dep;
                 }else{
                     
                     console.log("staff new head" + headexists)
                     if (!headexists){
-                        return res.send("this staff member does not exist");
+                        return res.send({mess:"this staff member does not exist"});
                     }
                     if (headexists.role1.toLowerCase().trim() !== "instructor"){
-                        return res.send("this staff member is not an instructor");
+                        return res.send({mess:"this staff member is not an instructor"});
                     }
                     dep.name=req.body.name;
                      dep.head_id=req.body.head_id;
-                     dept= dep;
                 }
             }
 
@@ -935,10 +945,10 @@ if (result.role1.toLowerCase().trim() == "hr"){
                     }catch(err){
                         console.log(err)}                
                     
-                res.send("updated to: "+dept)
+                res.send({mess:"updated "})
                 }
                 else{
-                    res.send("department not found")
+                    res.send({mess:"department not found"})
                 }
     // await faculty.departments.push(dep); 
     
@@ -958,25 +968,25 @@ router.route('/hr/deleteDepartment')
 
     console.log(result);
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
     if(!req.body.faculty_name){
-        return res.send("please enter the  faculty name ")
+        return res.send({mess:"please enter the  faculty name "})
     }
    var faculty = await faculty_model.findOne({name:req.body.faculty_name});
    
    console.log(faculty);
    if (!faculty){
-       return res.send("This faculty does not exist");
+       return res.send({mess:"This faculty does not exist"});
    }
    if(!req.body.dep_id){
-    return res.send("please enter the  department id ")
+    return res.send({mess:"please enter the  department id "})
    }
    var department= faculty.departments.find(function (elem){return elem.id==req.body.dep_id})
 
       if(!department)
-   return res.send("This department does not exist")
+   return res.send({mess:"This department does not exist"})
   
       
         for(var i=(faculty.departments).length-1;i>-1;i--){
@@ -990,9 +1000,9 @@ if (result.role1.toLowerCase().trim() == "hr"){
 
     await faculty.save();
 
-res.send("deleted : "+department)}
+res.send({mess:"deleted "})}
 else{
-    return res.send("Only HR can delete a department")
+    return res.send({mess:"Only HR can delete a department"})
 }
 });
  
@@ -1003,21 +1013,21 @@ router.route('/hr/addCourse')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
     try{
         if(!req.body.faculty_name){
-            return res.send("please enter the  faculty name ")
+            return res.send({mess:"please enter the  faculty name "})
         }
     var faculty= await  faculty_model.findOne({name:req.body.faculty_name})
     if(!faculty)
-        return res.send("This faculty does not exist");   
+        return res.send({mess:"This faculty does not exist"});   
         var department=await (faculty.departments).find(function (elem){return elem.id==req.body.dep_id})   
         if(!department)
-        return res.send("This department does not exist");  
+        return res.send({mess:"This department does not exist"});  
         if(await (department.courses.find(elem=>(elem.id==req.body.id))))
-        return res.send("This course already  exist");  
+        return res.send({mess:"This course already  exist"});  
 
        
             var course={
@@ -1037,10 +1047,11 @@ if (result.role1.toLowerCase().trim() == "hr"){
 
       })
         
-res.send("added : "+ course)
+res.send({mess:"added"})
 }catch(err){
-    return res.send.log(err)
+    console.log(err)
 }
+
 }
 else{
     return res.send("Only HR can add a course")
@@ -1057,33 +1068,34 @@ router.route('/hr/updatecourse')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
+    try{
 if (result.role1.toLowerCase().trim() == "hr"){
     if(!req.body.faculty_name){
-        return res.send("please enter the  faculty name ")
+        return res.send({mess:"please enter the  faculty name "})
     }
     var faculty = await faculty_model.findOne({name:req.body.faculty_name});
    // console.log(faculty);
     if (!faculty){
-        return res.send("This faculty does not exist");
+        return res.send({mess:"This faculty does not exist"});
     }else{
         if(!req.body.dep_id)
-        return res.send("enter department id");
+        return res.send({mess:"enter department id"});
      var dep=await faculty.departments.find(function (elem){return elem.id==req.body.dep_id})   
     // console.log("HIIIIIIIIIIIIIIIII"+dep);
      if(!dep)
-     return res.send("This department does not exist");
+     return res.send({mess:"This department does not exist"});
 else{
     if(!req.body.course_id)
-    return res.send("enter course id");
+    return res.send({mess:"enter course id"});
     var course=await dep.courses.find(function (elem){return elem.id==req.body.course_id})   
         if(!course)
         return res.send("This course does not exist");
         else{
            
                 if(!req.body.credit_hours){
-                return res.send("please enter updated location info (credit hours)")
+                return res.send({mess:"please enter updated location info (credit hours)"})
                 }else{
                     course.credit_hours=req.body.credit_hours
                 }
@@ -1094,11 +1106,19 @@ else{
             return dep.courses.find(elem=>(elem.id==req.body.course_id))
              })
              await faculty.save();
-res.send("updated to: "+course)
+res.send({mess:"updated"})
 }}}}
 else{
-    return res.send("Only HR can update a course")
+    return res.send({mess:"Only HR can update a course"})
 }
+    }catch(err){
+        console.log(err);
+    }
+
+
+
+
+
 });
 
 router.route('/hr/deletecourse')
@@ -1107,34 +1127,35 @@ router.route('/hr/deletecourse')
     const result = await auth(req,res);
 
     console.log(result);
-
+    try{
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed :P"})
     }
+   
 if (result.role1.toLowerCase().trim() == "hr"){
     try{
     if(!req.body.faculty_name){
-        return res.send("please enter the  faculty name ")
+        return res.send({mess:"please enter the  faculty name "})
     }
    var faculty = await faculty_model.findOne({name:req.body.faculty_name});
    
  console.log("KABB000"+faculty);
    if (!faculty){
-       return res.send("This faculty does not exist");
+       return res.send({mess:"This faculty does not exist"});
    }
    if(!req.body.dep_id){
-    return res.send("please enter the  department id ")
+    return res.send({mess:"please enter the  department id "})
 }
    var department= faculty.departments.find(function (elem){return elem.id==req.body.dep_id})
    if(!department)
-   return res.send("This department does not exist");
+   return res.send({mess:"This department does not exist"});
    else{
        if(!req.body.course_id)
-       return res.send("please enter the  course id ")
+       return res.send({mess:"please enter the  course id "})
 
        var course= department.courses.find(function (elem){return elem.id==req.body.course_id})
        if(!course){
-        return res.send("This department does not exist");
+        return res.send({mess:"This course does not exist"});
        }
        else{
         for(var i=(department.courses).length-1;i>-1;i--){
@@ -1150,13 +1171,18 @@ if (result.role1.toLowerCase().trim() == "hr"){
    await faculty.save();
   
 
-res.send("deleted : "+ course)
+        res.send({mess:"deleted "})
 }catch(err){
-    return res.send(err)}
+    return res.send({mess:"err"})}
 }
 else{
-    return res.send("Only HR can delete a course")
+    return res.send({mess:"Only HR can delete a course"})
 }
+    }catch(err){
+console.log("error")
+    }
+
+
 });
  
 
@@ -1167,19 +1193,19 @@ router.route('/hr/addmissingSignIn')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
 if(req.body.id==result.id){
-    return res.send("can't do this to an Hr staff memeber ")
+    return res.send({mess:"can't do this to an Hr staff memeber "})
 }else{
 
     if(!req.body.signIn){
-        return res.send("please enter a signin and signout")
+        return res.send({mess:"please enter a signin and signout"})
     }else{
         
       if(!req.body.signIn instanceof Date)
-    return res.send("please enter a valid format for signin ")
+    return res.send({mess:"please enter a valid format for signin "})
      
      else{
         var att=await attendance_model.findOne({staff_id:req.body.id});
@@ -1199,10 +1225,10 @@ if(req.body.id==result.id){
                             try{
                             signs[i].signIn=signin_body;
                             rec.missing_hours-=(signs[i].signOut-signs[i].signIn)/1000
-                            return res.send("update successful")
+                            return res.send({mess:"update successful"})
                             break;
                             }catch(error){
-                                return res.send(error);
+                                return res.send({mess:"error"});
                             }
                         }
 
@@ -1222,7 +1248,7 @@ if(req.body.id==result.id){
 }
 
 else{
-    return res.send("Only HR can add a missing sign in")
+    return res.send({mess:"Only HR can add a missing sign in"})
 }
 });
 
@@ -1233,20 +1259,20 @@ router.route('/hr/addmissingSignOut')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
 if(req.body.id==result.id){
-    return res.send("can't do this to an Hr staff memeber ")
+    return res.send({mess:"can't do this to an Hr staff memeber "})
 }else{
 
     if(!req.body.signOut){
-        return res.send("please enter a signout")
+        return res.send({mess:"please enter a signout"})
     }else{
         
       
         if(!req.body.signOut instanceof Date)
-     return res.send("please enter a valid format for signout ")
+     return res.send({mess:"please enter a valid format for signout "})
      else{
         var att=await attendance_model.findOne({staff_id:req.body.id});
             var signout_body=new Date(req.body.signOut);
@@ -1263,10 +1289,10 @@ if(req.body.id==result.id){
                             try{
                                 signs[i].signOut=signout_body;
                                 rec.missing_hours-=(signs[i].signOut-signs[i].signIn)/1000
-                                return res.send("update successful")
+                                return res.send({mess:"update successful"})
                                 break;
                                 }catch(error){
-                                    return res.send(error);
+                                    return res.send({mess:"error"});
                                 }
                         }
                         
@@ -1290,28 +1316,28 @@ if(req.body.id==result.id){
 }
 }
 else{
-    return res.send("Only HR can add a missing sign out")
+    return res.send({mess:"Only HR can add a missing sign out"})
 }
 });
 
 
-
-
-
 router.route('/hr/viewattendanceRec')
-.get(async (req, res)=>{
+.post(async (req, res)=>{
     const result = await auth(req,res);
-    console.log(result);
+    try{
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
     var att=await attendance_model.findOne({staff_id:req.body.id});
-    return res.send(att.attendance);
+    return res.send({att:att.attendance});
 
 }
 else{
-    return res.send("Only HR can view attendance record")
+    return res.send({mess:"Only HR can view attendance record"})
+}
+}catch(err){
+console.log("err")
 }
 });
 
@@ -1322,7 +1348,7 @@ router.route('/hr/updateSalary')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
     
@@ -1339,13 +1365,13 @@ if (result.role1.toLowerCase().trim() == "hr"){
             console.log("Updated Docs : ", docs); 
         } 
     }); }else{
-        return res.send("salary must be a number");
+        return res.send({mess:"salary must be a number"});
     }
-res.send("salary updated successfully")
+res.send({mess:"salary updated successfully"})
 
 }
 else{
-    return res.send("Only HR can update salary ")
+    return res.send({mess:"Only HR can update salary "})
 }
 });
 function checkGUCMonth(recdate, date){
@@ -1354,21 +1380,19 @@ function checkGUCMonth(recdate, date){
     let day = recdate.getDate()
     console.log("day"+day)
     console.log(recdate.getMonth()+"months"+date.getMonth())
-    console.log(recdate.getYear()+"months"+date.getYear())
+    console.log(recdate.getFullYear()+"months"+date.getFullYear())
     if (day>=11){
         month+=1
     }
-    if(date.getMonth()==month-1 & date.getYear()==year & day>10){
+    if(date.getMonth()==month-1 & date.getYear()>=year-1 & day>10){
         return true;
     }
-    if(date.getMonth()==month & date.getYear()==year & date<=10){
+    if(date.getMonth()==month & date.getYear()==year & day<=10){
         return true;
     }
     
     return false;
     }
-
-
 
 router.route('/hr/viewStaffmemberMissinghours')
 .post(async (req, res)=>{
@@ -1377,7 +1401,7 @@ router.route('/hr/viewStaffmemberMissinghours')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
  var show=[];
@@ -1395,16 +1419,16 @@ console.log(att)
 
  }
 if(show.length>0){
-    return res.send(show)
+    return res.send({att:show})
 }else{
-    return res.send("no staff members with missing hours")
+    return res.send({mess:"no staff members with missing hours"})
 }
 
 
 
 }
 else{
-    return res.send("Only HR can view missing hours ")
+    return res.send({mess:"Only HR can view missing hours "})
 }
 });
 
@@ -1416,7 +1440,7 @@ router.route('/hr/viewStaffmemberMissingdays')
     console.log(result);
 
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({mess:"Authenication failed"})
     }
 if (result.role1.toLowerCase().trim() == "hr"){
  var show=[];
@@ -1434,9 +1458,9 @@ console.log(att)
 
  }
 if(show.length>0){
-    return res.send(show)
+    return res.send({att:show})
 }else{
-    return res.send("no staff members with missing days")
+    return res.send({mess:"no staff members with missing days"})
 }
 
 

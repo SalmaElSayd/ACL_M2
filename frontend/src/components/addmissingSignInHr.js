@@ -2,10 +2,13 @@ import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
 import '../style/idk.css'
-import Button from 'react-bootstrap/Button'
 import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
 
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
 
 
 
@@ -43,17 +46,21 @@ const handlesignInChange = (date)=>{
 
 
 const handleHome=(e)=>{
-    window.location='/hr'
+    window.location='/home'
 }
 
+
     return (
-            <div >
+            
+           <div className='form-loc'>
+
                 <h1>
-          add missing signin 
+          add a missing sign-in 
             </h1>
+
             
             <form className="submit" onSubmit={onSubmit}>
-        <input className="pt" placeholder="staff id" type="text" onChange={handleIdChange} />
+        <input  className="form-control"  placeholder="staff id" type="text" onChange={handleIdChange} />
         <br />
 
         <Datetime  onChange={handlesignInChange} />
@@ -61,10 +68,13 @@ const handleHome=(e)=>{
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>
+        <div/>
 <div className="gobackbutton">
+
          <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
          </div>
             </div>
+
 
         );
     
