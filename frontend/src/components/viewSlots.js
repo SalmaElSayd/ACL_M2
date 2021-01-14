@@ -73,7 +73,6 @@ export class ViewSlots extends Component{
                             <tr>
                                 <th>ID</th>
                                 <th>Type</th>
-                                <th>Taken</th>
                                 <th>Date</th>
                                 <th>Day</th>
                                 <th>Replacement</th>
