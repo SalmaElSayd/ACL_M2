@@ -35,7 +35,7 @@ export class viewSendReplacementRequest extends Component {
        
         return (
             <div className='table-loc'>
-                <h3>Send Replacement Requests:</h3>
+                <h3>Sent Replacement Requests:</h3>
                     <table className='table-hover'>
                         <thead>
                             <tr>

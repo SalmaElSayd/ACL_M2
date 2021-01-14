@@ -293,12 +293,12 @@ router.route('/updateProfile')
             var staffDocument = await staff_model.updateOne({id: result.id},  
                 {info:req.body.info})
         } catch (error) {
-            return res.send(error)
+            return res.send({message: "An error occured please try again.", error :error})
         }
         
     }
     var upd = await staff_model.findOne({id:result.id});
-    res.send({new_profile: upd.info});
+    res.send({new_profile: upd.info, message:"update successful"});
 });
 
 router.route('/resetPassword')
@@ -323,7 +323,7 @@ try {
         console.log(newPassword)
 
 } catch (error) {
-    return res.send(error);
+    return res.send( {message: "An error occured please try again.", error:error});
 }
     
     res.send({message: "password reset done"});

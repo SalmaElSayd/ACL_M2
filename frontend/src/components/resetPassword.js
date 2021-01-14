@@ -14,7 +14,8 @@ function ResetPassword() {
     }
     axios.post('http://localhost:3001/resetPassword', info, {headers:{authorisation:localStorage.getItem('jwtToken')}})
     .then(res => {
-      console.log("resdata "+res.data.message);
+      setResMessage(res.data.message)
+      console.log("resdata "+res.data);
       })
       
 
@@ -41,7 +42,7 @@ const handlePasswordChange = (e)=>{
         <input placeholder="password" type="password" className="form-control" onChange={handlePasswordChange} />
         <input type="submit" className="btn btn-primary" />
             </form>
-  <label>{resMessage}</label>
+  <p>{resMessage}</p>
         </div>
     </div>
 

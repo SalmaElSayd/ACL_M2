@@ -52,28 +52,8 @@ const handleNewPasswordChange = (e)=>{
 }
 if (firstLogin){
   return (
-    <body >
       <div className="login">
-        <h2>
-            Log in
-            </h2>
-            
-        
 
-            <form onSubmit={onSubmit}>
-        <input placeholder="email" type="email" onChange={handleEmailChange} />
-        <input placeholder="password" type="password"onChange={handlePasswordChange} />
-        <input placeholder="new password" type="password"onChange={handleNewPasswordChange} />
-        <input className ='btn btn-primary btn-block btn-large' type="submit" />
-            </form>
-        <label>{resMessage}</label>
-    </div>
-    </body>
-  );}
-  else{
-    return (
-    <div className='loginbody'>
-      <div className="login">
         <h1>
             Log in
             </h1>
@@ -88,7 +68,26 @@ if (firstLogin){
             </form>
         <label>{resMessage}</label>
     </div>
-    </div>)
+  );}
+  else{
+    return (
+     <div className='login'> 
+
+        <h1>
+            Log in
+            </h1>
+            
+        
+
+            <form onSubmit={onSubmit}>
+        <input placeholder="email" type="email" onChange={handleEmailChange} />
+        <input placeholder="password" type="password"onChange={handlePasswordChange} />
+        <input placeholder="new password" type="password"onChange={handleNewPasswordChange} />
+        <input className ='btn btn-primary btn-block btn-large' type="submit" />
+            </form>
+        <label>{resMessage}</label>
+    </div>
+    )
   }
 }
 

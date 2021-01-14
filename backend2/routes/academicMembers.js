@@ -117,7 +117,7 @@ if(!requests){
 });
 }
     return res.json({
-      error:"Here are all your send replacements requests.",
+      error:"Here are all your sent replacements requests.",
       requests
   });
   
