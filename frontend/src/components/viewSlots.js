@@ -89,7 +89,6 @@ export class ViewSlots extends Component{
                                     <tr key={index}>
                                         <td>{item['id']}</td>
                                         <td>{item['type']}</td>
-                                        <td>{item['taken'] ? "Yes" : "No"}</td>
                                         <td>{item['date']}</td>
                                         <td>{item['day']}</td>
                                         <td>{item['replacement'] ? "Yes" : "No"}</td>
