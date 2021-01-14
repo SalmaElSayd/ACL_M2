@@ -42,12 +42,6 @@ export const InstructorSidebarData = [
         className: 'nav-text'
     },
     {
-        title:'Assign Coordinator',
-        path:'/assignCoordinator',
-        icon: <AiIcons.AiOutlineUserAdd/>,
-        className: 'nav-text'
-    },
-    {
         title:'Course Coverage',
         path:'/viewCoverageInstructor',
         icon: <AiIcons.AiOutlinePercentage/>,
