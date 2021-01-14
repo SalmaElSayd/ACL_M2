@@ -1,33 +1,34 @@
 import React from 'react'
-import * as TiIcons from 'react-icons/ti'; 
+import * as GiIcons from 'react-icons/gi'; 
 import * as AiIcons from 'react-icons/ai'; 
 import * as IoIcons from 'react-icons/io'; 
+import * as GrIcons from 'react-icons/gr'; 
 import * as MdIcons from 'react-icons/md'; 
-import * as GiIcons from 'react-icons/gi'; 
 
-export const CoordinatorSidebarData = [
+
+export const AMSidebarData = [
     {
         title: 'Home',
         path: '/home',
-        icon: <AiIcons.AiOutlineUser />,
+        icon: <AiIcons.AiFillHome />,
         className: 'nav-text'
     },
     {
         title: 'Sign in or out',
         path: '/signinout',
-        icon: <AiIcons.AiOutlineFieldTime/>,
+        icon: <AiIcons.AiOutlineUserAdd/>,
         className: 'nav-text'
     },
     {
         title: 'View My Attendance',
         path: '/viewAttendance',
-        icon: <AiIcons.AiFillDatabase/>,
+        icon: <AiIcons.AiOutlineUserAdd/>,
         className: 'nav-text'
     },
     {
         title: 'Reset Password',
         path: '/resetPassword',
-        icon: <AiIcons.AiOutlineKey/>,
+        icon: <AiIcons.AiOutlineUserAdd/>,
         className: 'nav-text'
     },
     {
@@ -35,8 +36,13 @@ export const CoordinatorSidebarData = [
         path: '/updateProfile',
         icon: <AiIcons.AiOutlineUserAdd/>,
         className: 'nav-text'
+    }, 
+    {
+        title: 'Notifications',
+        path: '/academicMember/notifications',
+        icon: <IoIcons.IoMdNotifications />,
+        className: 'nav-text'
     },
-    
     {
         title: 'Send a Leave Request',
         path: '/academicMember/sendLeaveRequest',
@@ -92,12 +98,7 @@ export const CoordinatorSidebarData = [
         icon: <MdIcons.MdPageview />,
         className: 'nav-text'
     } ,
-    {
-        title: 'Notifications',
-        path: '/academicMember/notifications',
-        icon: <IoIcons.IoMdNotifications />,
-        className: 'nav-text'
-    },
+   
     {
         title: 'Change Day Off',
         path: '/academicMember/changeDayOff',
@@ -109,41 +110,7 @@ export const CoordinatorSidebarData = [
         path: '/academicMember/cancelRequest',
         icon: <GiIcons.GiCancel />,
         className: 'nav-text'
-    },
-    {
-        title: 'Delete Course Slot',
-        path: '/deleteSlot',
-        icon: <MdIcons.MdSupervisorAccount />,
-        className: 'nav-text'
-    },
-    {
-        title: 'Upadte Course Slot',
-        path: '/updateSlot',
-        icon: <MdIcons.MdSupervisorAccount />,
-        className: 'nav-text'
-    },
-    {
-        title: 'Add Course Slot',
-        path: '/addSlot',
-        icon: <MdIcons.MdSupervisorAccount />,
-        className: 'nav-text'
-    },
-    {
-        title: 'Slot-Linking Requests',
-        path: '/coordinator/viewSlotLinkingRequests',
-        icon: <IoIcons.IoMdChatboxes />,
-        className: 'nav-text'
-    },
-    {
-        title: 'Accept Request',
-        path: '/coordinator/acceptSlotLinkingRequests',
-        icon: <TiIcons.TiTickOutline />,
-        className: 'nav-text'
-    },
-    {
-        title: 'Reject Request',
-        path: '/coordinator/rejectSlotLinkingRequest',
-        icon: <AiIcons.AiFillCloseSquare />,
-        className: 'nav-text'
     }
+
+    
 ]
