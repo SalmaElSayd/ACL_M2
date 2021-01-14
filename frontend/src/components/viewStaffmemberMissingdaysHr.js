@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, {useState} from 'react';
-import '../style/idk.css'
+import '../style/ViewStaff.css'
 import '../style/buttons.css'
 
 import Button from 'react-bootstrap/Button'
@@ -38,7 +38,7 @@ const onSubmit = (e)=>{
 
 
 const handleHome=(e)=>{
-    window.location='/hr'
+    window.location='/home'
 }
 
 
@@ -49,6 +49,8 @@ const handleHome=(e)=>{
                 <h1>
          view staff memebers with missing Days 
             </h1>
+
+            <div className='form-loc'>
 
             <form className="submit" onSubmit={onSubmit}>
        
@@ -78,6 +80,7 @@ const handleHome=(e)=>{
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>
+        </div>
 <div className="gobackbutton">
          <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
          </div>

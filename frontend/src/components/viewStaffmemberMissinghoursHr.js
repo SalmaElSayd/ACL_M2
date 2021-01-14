@@ -40,7 +40,7 @@ const onSubmit = (e)=>{
 
 
 const handleHome=(e)=>{
-    window.location='/hr'
+    window.location='/home'
 }
 
 
@@ -51,12 +51,12 @@ const handleHome=(e)=>{
                 <h1>
          view staff memebers with missing hours 
             </h1>
+            <div className='form-loc'>
+
 
             <form className="submit" onSubmit={onSubmit}>
        
-            <input className ='btn btn-primary btn-block btn-large' type="submit" />
-            </form>
-
+        
         <table className='table-hover'>
                         <thead>
                             <tr>
@@ -77,9 +77,12 @@ const handleHome=(e)=>{
                             })}
                         </tbody>
                     </table>
+                    <input className ='btn btn-primary btn-block btn-large' type="submit" />
+            </form>
 
-                    <h1>hi</h1>
+
         <label>{resMessage}</label>
+        </div>
 <div className="gobackbutton">
          <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
          </div>

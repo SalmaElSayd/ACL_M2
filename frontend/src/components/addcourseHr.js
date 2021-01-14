@@ -2,6 +2,11 @@ import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
 import '../style/loginstyle.css'
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
+
 
 
 function AddcourseHr(){
@@ -24,11 +29,11 @@ function AddcourseHr(){
         credit_hours:credit_hours,
         coverage:coverage
     }
-    axios.post('http://localhost:3001/hr/updatecourse', info,{headers:{authorisation:localStorage.getItem('jwtToken')}})
+    axios.post('http://localhost:3001/hr/addCourse', info,{headers:{authorisation:localStorage.getItem('jwtToken')}})
     .then(res => {
      
         setResMessage(res.data.mess)
-        window.location='/hr'
+
 
       })
       
@@ -53,6 +58,12 @@ const handlecoverageChange = (e)=>{
     const coverage = e.target.value ;
     setcoverage(coverage);
 }
+const handleHome=(e)=>{
+    window.location='/home'
+}
+
+
+
 
 
 
@@ -62,23 +73,34 @@ const handlecoverageChange = (e)=>{
                 <h1>
            Add a course 
             </h1>
-            
+            <div className='form-loc'>
             <form onSubmit={onSubmit}>
-        <input placeholder="faculty name" type="text" onChange={handleFnameChange} />
+    <input  className="form-control" placeholder="faculty name" type="text" onChange={handleFnameChange} />
         <br />
-        <input placeholder="add a dep id" type="text" onChange={handledep_idChange} />
+        <input  className="form-control" placeholder="add a dep id" type="text" onChange={handledep_idChange} />
         <br />
-        <input placeholder="add a course id" type="text" onChange={handleidChange} />
+        <input  className="form-control" placeholder="add a course id" type="text" onChange={handleidChange} />
         <br />
-        <input placeholder="add coure credit hours" type="number" onChange={handledcredit_hoursChange} />
+        <input  className="form-control" placeholder="add coure credit hours" type="number" onChange={handledcredit_hoursChange} />
         <br />
-        <input placeholder="add coure covergae" type="number" onChange={handlecoverageChange} />
+        <input  className="form-control" placeholder="add coure covergae" type="number" onChange={handlecoverageChange} />
         <br />
 
-        <input className ='btn btn-primary btn-block btn-large' type="submit" />
+        <button type="submit" className="btn btn-primary">Submit</button>
+                            
+                            
             </form>
-        <label>{resMessage}</label>
+        <label className="labelhr">{resMessage}</label>
+       
+               </div>
+               <div className="gobackbutton">
+             <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
+               </div>
             </div>
+
+
+
+         
         );
     
 }

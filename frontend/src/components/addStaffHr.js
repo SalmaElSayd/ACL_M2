@@ -1,7 +1,10 @@
 import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
-import '../style/loginstyle.css'
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
 
 
 function AddStaffHr(){
@@ -35,7 +38,6 @@ function AddStaffHr(){
     .then(res => {
      
         setResMessage(res.data.mess)
-        window.location='/hr'
 
       
       })
@@ -86,6 +88,9 @@ const handleChange2 =(e)=>{
     setrole2(role2);  
 
 }
+const handleHome=(e)=>{
+    window.location='/home'
+}
 
 
 
@@ -93,31 +98,32 @@ const handleChange2 =(e)=>{
 
         return (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 30 }}>
+               <div className='form-loc'>
                 <h1>
           Add a staff memeber
             </h1>
             
             <form onSubmit={onSubmit}>
-        <input placeholder="name" type="text" onChange={handleNameChange} />
+        <input  className="form-control"  placeholder="name" type="text" onChange={handleNameChange} />
         <br />
-        <input placeholder="email" type="email" onChange={handleEmailChange} />
+        <input  className="form-control"  placeholder="email" type="email" onChange={handleEmailChange} />
         <br />
-        <input placeholder="salary" type="number" onChange={handleSalaryChange} />
+        <input  className="form-control"  placeholder="salary" type="number" onChange={handleSalaryChange} />
         <br />
         <div onChange={onChangeGender}>
         <input type="radio" value="false" name="gender" /> Male
         <input type="radio" value="true" name="gender" /> Female
       </div>
 <br/>
-<input placeholder="office location" type="text" onChange={handleLocationChange} />
+<input  className="form-control"  placeholder="office location" type="text" onChange={handleLocationChange} />
 <br/>
-<input placeholder="faculty" type="text" onChange={handleFacultyChange} />
+<input  className="form-control"   placeholder="faculty" type="text" onChange={handleFacultyChange} />
         <br />
-        <input placeholder="dept id" type="text" onChange={handleDepChange} />
+        <input  className="form-control"  placeholder="dept id" type="text" onChange={handleDepChange} />
         <br />
        
        <div>
-       <label>Role 1</label>
+       <label className="labelhr" >Role 1</label>
 
       <select onChange={handleChange1} > 
 
@@ -128,7 +134,7 @@ const handleChange2 =(e)=>{
       </div>
 
       <div>
-      <label>Role 2</label>
+      <label className="labelhr">Role 2  </label>
 
       <select onChange={handleChange2} > 
       <small className="form-text text-muted">Role2</small>
@@ -140,7 +146,11 @@ const handleChange2 =(e)=>{
 
        <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
-        <label>{resMessage}</label>
+        <label className="labelhr" >{resMessage}</label>
+            </div>
+            <div className="gobackbutton">
+             <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
+               </div>
             </div>
         );
     

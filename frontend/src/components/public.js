@@ -38,6 +38,7 @@ import {Login, Sign, Public, MyProfile, Schedule, PublicNavbar, MyAttendance, Re
   updateSalaryHr,viewStaffmemberMissinghoursHr,viewStaffmemberMissingdaysHr
 } from '../components'
 import { Link } from 'react-router-dom'
+import { login } from '../api';
 
 function Allstaff() {
   //render conditionally according to role
@@ -118,6 +119,7 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
             <Route path='/viewAttendance' exact component={MyAttendance}></Route>
             <Route path='/resetPassword' exact component={ResetPassword}></Route>
             <Route path='/updateProfile' exact component={UpdateProfile}></Route>
+            <Route path='/viewStaff' exact component={ViewStaff}></Route>
 
 
             <Route path='/assignCoordinator' exact component={AssignCoordinator}></Route>
@@ -236,10 +238,14 @@ if (role1.toLowerCase()=='instructor'&& role2.toLowerCase()=='hod'){
                           
                     <Switch>
                       <Route exact path="/home" component = {MyProfile} />
+                      <Route exact path="/" component = {login} />
                       <Route path='/signinout' exact component={Sign}></Route>
                       <Route path='/viewAttendance' exact component={MyAttendance}></Route>
                       <Route path='/resetPassword' exact component={ResetPassword}></Route>
                       <Route path='/updateProfile' exact component={UpdateProfile}></Route>
+                      <Route path='/viewStaff' exact component={ViewStaff}></Route>
+                      <Route path='/assignCoordinator' exact component={AssignCoordinator}></Route>
+
               
                       <Route exact path="/addlocation" exact component = {addlocation} />
         <Route exact path="/updatelocation" exact component = {updatelocation} />

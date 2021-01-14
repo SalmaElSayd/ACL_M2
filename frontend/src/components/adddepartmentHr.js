@@ -2,6 +2,11 @@ import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
 import '../style/loginstyle.css'
+import Button from 'react-bootstrap/Button'
+
+import '../style/ViewStaff.css'
+import '../style/buttons.css'
+
 
 
 function AdddepartmentHr(){
@@ -26,7 +31,6 @@ function AdddepartmentHr(){
     .then(res => {
      
         setResMessage(res.data.mess)
-        window.location='/hr'
 
       })
       
@@ -48,6 +52,10 @@ const handledCourse_ideChange = (e)=>{
     setcourse_id(course_id);
 }
 
+const handleHome=(e)=>{
+    window.location='/home'
+}
+
 
 
         return (
@@ -55,19 +63,24 @@ const handledCourse_ideChange = (e)=>{
                 <h1>
            Add a departmentHr 
             </h1>
-            
+            <div className='form-loc'>
             <form onSubmit={onSubmit}>
-        <input placeholder="faculty name" type="text" onChange={handlenameChange} />
+        <input  className="form-control" placeholder="faculty name" type="text" onChange={handlenameChange} />
         <br />
-        <input placeholder="add a dep id" type="text" onChange={handledep_idChange} />
+        <input className="form-control" placeholder="add a dep id" type="text" onChange={handledep_idChange} />
         <br />
-        <input placeholder="add a dep name" type="text" onChange={handledep_nameChange} />
+        <input  className="form-control" placeholder="add a dep name" type="text" onChange={handledep_nameChange} />
         <br />
-        <input placeholder="add a new course  id" type="text" onChange={handledCourse_ideChange} />
+        <input  className="form-control" placeholder="add a new course  id" type="text" onChange={handledCourse_ideChange} />
         <br />
-        <input className ='btn btn-primary btn-block btn-large' type="submit" />
+        <input   className="form-control" className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
+            </div>
         <label>{resMessage}</label>
+
+        <div className="gobackbutton">
+             <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
+               </div>
             </div>
         );
     

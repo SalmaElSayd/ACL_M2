@@ -3,8 +3,10 @@ import {useHistory} from 'react-router-dom'
 import React, {useState} from 'react';
 import Button from 'react-bootstrap/Button'
 
-import '../style/idk.css'
+import '../style/ViewStaff.css'
 import '../style/buttons.css'
+
+
 
 
 function DeletecourseHr(){
@@ -46,7 +48,7 @@ const handlesetcourse_idChange = (e)=>{
     setcourse_id(h);
 }
 const handleHome=(e)=>{
-    window.location='/hr'
+    window.location='/home'
 }
 
 
@@ -60,33 +62,25 @@ const handleHome=(e)=>{
         return (
 
 
-            <div className="login-box">
+            <div className='form-loc'>
 
                 <h2> delete a course </h2>
                         <form onSubmit={onSubmit}>
-                                <div class="user-box">
-                                <input type="text" name="" required="" onChange={handleFnameChange}/>
-                                <label>faculty name</label>
-                                </div>
-                            <div class="user-box">
-                            <input type="password" name="" required="" onChange={handledep_idChange}/>
-                            <label>dep id</label>
-                            </div>
+                              
+                                <input  className="form-control" placeholder="faculty name" type="text" name="" required="" onChange={handleFnameChange}/>
+                             
+                              
+                           
+            <input  className="form-control" placeholder="add a dep id"  type="password" name="" required="" onChange={handledep_idChange}/>
+                         
 
-                            <div class="user-box">
-                            <input type="password" name="" required="" onChange={handlesetcourse_idChange}/>
-                            <label>course id</label>
-                            </div>
-
-                            <a href="#">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            Submit
-                            </a>
+                           
+                            <input  className="form-control" placeholder="add a course id" type="password" name="" required="" onChange={handlesetcourse_idChange}/>
+                          
+                            <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
-                <label>{resMessage}</label>
+                        <div/>
+                <label className="labelhr" >{resMessage}</label>
                 <div className="gobackbutton">
                         <Button onClick={handleHome} variant="outline-primary">Go back gome </Button>{'    '}
                         </div>
