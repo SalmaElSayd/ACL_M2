@@ -108,13 +108,7 @@ export const SidebarHrc = [
    
    
    
-   
-    {
-        title: 'Home',
-        path: '/home',
-        icon: <AiIcons.AiFillHome />,
-        className: 'nav-text'
-    },
+
      
     {  
         title: 'add Location',

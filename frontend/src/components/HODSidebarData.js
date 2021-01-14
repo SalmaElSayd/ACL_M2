@@ -39,6 +39,72 @@ export const HODSidebarData = [
         className: 'nav-text'
     },
     {
+        title: 'Update Profile',
+        path: '/updateProfile',
+        icon: <AiIcons.AiOutlineUserAdd/>,
+        className: 'nav-text'
+    }, 
+    {
+        title:'Assign Coordinator',
+        path:'/assignCoordinator',
+        icon: <AiIcons.AiOutlineUserAdd/>,
+        className: 'nav-text'
+    },
+    {
+        title:'Assign Coordinator',
+        path:'/assignCoordinator',
+        icon: <AiIcons.AiOutlineUserAdd/>,
+        className: 'nav-text'
+    },
+    {
+        title:'Course Coverage',
+        path:'/viewCoverageInstructor',
+        icon: <AiIcons.AiOutlinePercentage/>,
+        className: 'nav-text'
+    },
+    {
+        title:'View Slots',
+        path:'/viewSlots',
+        icon: <AiIcons.AiFillSchedule />,
+        className: 'nav-text'
+    },
+    {
+        title: 'Staff In Department',
+        path: '/viewStaffDepartment',
+        icon: <IoIcons.IoMdPeople />,
+        className: 'nav-text'
+    },
+    {
+        title: 'Staff In Course',
+        path: '/viewStaffCourse',
+        icon: <IoIcons.IoMdPeople />,
+        className: 'nav-text'
+    },
+    {
+        title: 'Assign To Slot',
+        path: '/assignToSlot',
+        icon: <AiIcons.AiFillSchedule />,
+        className: 'nav-text'
+    },
+    {
+        title: 'Update Members Course',
+        path: '/updateCourseMem',
+        icon: <MdIcons.MdSupervisorAccount />,
+        className: 'nav-text'
+    },
+    {
+        title: 'Delete Members Course',
+        path: '/deleteCourseMem',
+        icon: <MdIcons.MdSupervisorAccount />,
+        className: 'nav-text'
+    },
+    {
+        title: 'Remove Members Course',
+        path: '/removeCourseMem',
+        icon: <MdIcons.MdSupervisorAccount />,
+        className: 'nav-text'
+    },
+    {
         title: 'Assign Instructor',
         path: '/assignCourseInstructor',
         icon: <AiIcons.AiOutlineUserAdd/>,

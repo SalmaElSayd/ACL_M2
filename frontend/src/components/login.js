@@ -53,9 +53,9 @@ if (firstLogin){
   return (
     <body >
       <div className="login">
-        <h1>
+        <h2>
             Log in
-            </h1>
+            </h2>
             
         
 
