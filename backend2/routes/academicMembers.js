@@ -378,14 +378,14 @@ router.route('/academicMember/sendLeaveRequest')
   const result = await auth(req,res);
     console.log(result);
     if(!result){
-        return res.send("Authenication failed")
+        return res.send({message:"Authenication failed"})
     }
     const profile  = await staff_model.findOne({id:result.id});
     if(!profile){
-        return res.send("This account does not exist")
+        return res.send({message:"This account does not exist"})
     } 
     if (profile.role1.toLowerCase().trim()!=="ta"){
-      return res.send("Only TAs can accept access")
+      return res.send({message:"Only TAs can accept access"})
   }
 try {
     let hod=0;
@@ -399,41 +399,28 @@ try {
     })
   const gender_mem=profile.gender;
   let newRequest = 0;
-  if(req.body.compensation_date){
-     newRequest = new request_model({
-      sending_staff:profile.id,
-      receiving_staff:hod, 
-      request_type:req.body.request_type,
-      reason: req.body.reason,
-      req_slot:req.body.req_slot,
-      replacement_id: req.body.replacement_id,
-      request_date: new Date(req.body.request_date),
-      compensation_date:new Date(req.body.compensation_date),
-      document: req.body.document
-    });
-  }else{
+  
    newRequest = new request_model({
         sending_staff:profile.id,
         receiving_staff:hod, 
         request_type:req.body.request_type,
         reason: req.body.reason,
-        req_slot:req.body.req_slot,
         replacement_id: req.body.replacement_id,
         request_date: new Date(req.body.request_date),
         document: req.body.document
       });
-    }
+    
 if (!newRequest.request_type) {
-return res.status(401).send('Request type is required.Please add a request Type.');
+return res.send({message:'Request type is required.Please add a request Type.'});
   }
 ////////// Annual Leaves //////////////
   if(newRequest.request_type.toLowerCase().trim()=="annual"){
     var datereq = new Date();  
        if(!newRequest.request_date){
-        return res.status(401).send('Please add the specific day you are going to leave in. ');  
+        return res.send({message:'Please add the specific day you are going to leave in. '});  
       }   
        if(newRequest.request_date<datereq){
-      return res.status(401).send('Annual leaves should be submitted before the targeted day.');
+      return res.send({message:'Annual leaves should be submitted before the targeted day.'});
     }
                 day=newRequest.request_date.getDay();
                 let targetDay=0;
@@ -445,13 +432,13 @@ return res.status(401).send('Request type is required.Please add a request Type.
                   case 4:targetDay=profile.schedule.thursday; break;
                   case 6:targetDay=profile.schedule.saturday; break;
                   default:
-                    return res.send("The day chosen was friday which is not a working day. Please choose a working day.");
+                    return res.send({message:"The day chosen was friday which is not a working day. Please choose a working day."});
                         } 
                         
                   if(newRequest.replacement_id.length===0){
                    
                       await newRequest.save();
-                     return res.send("Your annual leave request has been send to HOD ( Head of your department) without your replacement for the day");
+                     return res.send({message:"Your annual leave request has been send to HOD ( Head of your department) without your replacement for the day"});
                        } 
                        
                         let req_request=await request_model.find({receiving_staff:{$in:newRequest.replacement_id}, sending_staff:profile.id, request_type:"replacement",status:"accepted"});
@@ -476,9 +463,9 @@ return res.status(401).send('Request type is required.Please add a request Type.
                           if(targetDay.length===counter){
                             
                             await newRequest.save();
-                     return res.send("Your annual leave request has been send to HOD ( Head of your department) with your replacement for the day");
+                     return res.send({message:"Your annual leave request has been send to HOD ( Head of your department) with your replacement for the day"});
                           }
-                      return res.send("Your annual leave request can not be sent !!!");
+                      return res.send({message:"Your annual leave request can not be sent !!!"});
 
                 
     }
@@ -489,38 +476,38 @@ return res.status(401).send('Request type is required.Please add a request Type.
      datereq = new Date(Date.now()); 
     if(datereq.getDate()<=newRequest.request_date.getDate()){
       if(profile.accidental_leave>6){
-        return res.send('You have reached your maximum usage of accidental leaves.');
+        return res.send({message:'You have reached your maximum usage of accidental leaves.'});
       }
       else{
         await newRequest.save();
-       return res.send("Your Accidental Leave request has been send to HOD.");
+       return res.send({message:"Your Accidental Leave request has been send to HOD."});
       }
       }
     else{
-      return res.status(401).send('You can not make an accidental leave before the accident happened.');
+      return res.send({message:'You can not make an accidental leave before the accident happened.'});
     }
      }
   //////////// Sick Leaves ////////////////
   if(newRequest.request_type.toLowerCase().trim()=="sick"){
      datereq = new Date(Date.now()); 
      if(datereq.getTime()-newRequest.request_date.getTime()>=3){
-      return res.status(401).send('This leave has exceeded the three days limit after the sick day.');
+      return res.send({message:'This leave has exceeded the three days limit after the sick day.'});
     }
     if(!newRequest.document){
-      return res.status(401).send('proper document should be submitted as a link.Please fill the document.');
+      return res.send({message:'proper document should be submitted as a link.Please fill the document.'});
     }
     await newRequest.save();
-    res.send("Your Sick_Leave request has been send.");
+    res.send({message:"Your Sick_Leave request has been send."});
   }
   ///////////// Maternity Leaves ////////////////
   if(newRequest.request_type.toLowerCase().trim()==="maternity"){
     if(gender_mem===true){ // check if female
       if(!newRequest.document){
-        return res.status(401).send('proper document should be submitted.');
+        return res.send({message:'proper document should be submitted.'});
       }
       else{
         await newRequest.save();
-        return res.send("Your Maternity_Leave request has been send.");
+        return res.send({message:"Your Maternity_Leave request has been send."});
       }
     }
   else{
@@ -529,49 +516,50 @@ return res.status(401).send('Request type is required.Please add a request Type.
   } 
   ////////// Compensation Leaves /////////////////   
   if(newRequest.request_type.toLowerCase().trim()==="compensation"){
-    if(!newRequest.reason){
-      return res.status(401).send('Reason is required.Please add a reason for you absence.');
-    }
-    if(!newRequest.compensation_date){
-      return res.status(401).send('Compensation Date is required.Please add a compensation date for your compensation.');
-    }
+    console.log("compensations");
+    // if(!newRequest.reason){
+    //   return res.status(401).send('Reason is required.Please add a reason for you absence.');
+    // }
+    // if(!newRequest.compensation_date){
+    //   return res.status(401).send('Compensation Date is required.Please add a compensation date for your compensation.');
+    // }
     
-    if(checkGUCMonth(newRequest.request_date,newRequest.compensation_date)){
-      var day=newRequest.compensation_date.getDay();
-      switch(day){
-        case 0:if(profile.day_off.toLowerCase().trim()==="sunday"){
-                  await newRequest.save();
-                return res.send("Your Compensation_Leave request has been send.");
-                } break;
-        case 1:if(profile.day_off.toLowerCase().trim()==="monday"){
-                    await newRequest.save();
-                    return res.send("Your Compensation_Leave request has been send.");
-                    } break;
-        case 2:if(profile.day_off.toLowerCase().trim()==="tuesday"){
+    // if(checkGUCMonth(newRequest.request_date,newRequest.compensation_date)){
+    //   var day=newRequest.compensation_date.getDay();
+    //   switch(day){
+    //     case 0:if(profile.day_off.toLowerCase().trim()==="sunday"){
+    //               await newRequest.save();
+    //             return res.send("Your Compensation_Leave request has been send.");
+    //             } break;
+    //     case 1:if(profile.day_off.toLowerCase().trim()==="monday"){
+    //                 await newRequest.save();
+    //                 return res.send("Your Compensation_Leave request has been send.");
+    //                 } break;
+    //     case 2:if(profile.day_off.toLowerCase().trim()==="tuesday"){
           
-                  await newRequest.save();
-                  return res.send("Your Compensation_Leave request has been send.");
-                  } break;
-        case 3:if(profile.day_off.toLowerCase().trim()==="wednesday"){
-                  await newRequest.save();
-                  return res.send("Your Compensation_Leave request has been send.");
-                  } break;
-        case 4:if(profile.day_off.toLowerCase().trim()==="thursday"){
-                    await newRequest.save();
-                    return res.send("Your Compensation_Leave request has been send.");
-                    } break;
-        case 6:if(profile.day_off.toLowerCase().trim()==="saturday"){
-                    await newRequest.save();
-                    return res.send("Your Compensation_Leave request has been send.");
-                    } break;
-        default:
-            return res.send("Please choose your compensation as your day off.");
-                  } 
-                  return res.status(401).send('Compensation Date is not your day off. Please choose another day.');
+    //               await newRequest.save();
+    //               return res.send("Your Compensation_Leave request has been send.");
+    //               } break;
+    //     case 3:if(profile.day_off.toLowerCase().trim()==="wednesday"){
+    //               await newRequest.save();
+    //               return res.send("Your Compensation_Leave request has been send.");
+    //               } break;
+    //     case 4:if(profile.day_off.toLowerCase().trim()==="thursday"){
+    //                 await newRequest.save();
+    //                 return res.send("Your Compensation_Leave request has been send.");
+    //                 } break;
+    //     case 6:if(profile.day_off.toLowerCase().trim()==="saturday"){
+    //                 await newRequest.save();
+    //                 return res.send("Your Compensation_Leave request has been send.");
+    //                 } break;
+    //     default:
+    //         return res.send("Please choose your compensation as your day off.");
+    //               } 
+    //               return res.status(401).send('Compensation Date is not your day off. Please choose another day.');
     
-    }else{
-      return res.status(401).send('Compensation Date is not in the same month.To avoid salary deduction please choose another day in the same month. ');
-    }
+    // }else{
+    //   return res.status(401).send('Compensation Date is not in the same month.To avoid salary deduction please choose another day in the same month. ');
+    // }
   }
 } catch (err) {
       console.log(err);

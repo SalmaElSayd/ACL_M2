@@ -82,7 +82,6 @@ if (firstLogin){
             <form onSubmit={onSubmit}>
         <input placeholder="email" type="email" onChange={handleEmailChange} />
         <input placeholder="password" type="password"onChange={handlePasswordChange} />
-        <input placeholder="new password" type="password"onChange={handleNewPasswordChange} />
         <input className ='btn btn-primary btn-block btn-large' type="submit" />
             </form>
         <label>{resMessage}</label>
