@@ -511,7 +511,7 @@ return res.send({message:'Request type is required.Please add a request Type.'})
       }
     }
   else{
-      return res.status(401).send('Only Female staff members can have the maternity leave. ');
+      return res.send({message:'Only Female staff members can have the maternity leave. '});
       }
   } 
   ////////// Compensation Leaves /////////////////   
