@@ -183,8 +183,7 @@ console.log(request)
                         <br />
                         <label>Request Date</label>
                         <small className="form-text text-muted">Please choose the date you want to leave.</small>
-                        <Datepic onSelect={this.onChangeRequestDate} /> 
-                        <br />
+                       
                         <Datetime  onChange={this.onChangeRequestDate} />
                         <br />
                         <label>Document</label>
